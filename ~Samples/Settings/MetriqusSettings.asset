@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be5a5fa8b3a3d21459c7b420047aec45, type: 3}
+  m_Name: MetriqusSettings
+  m_EditorClassIdentifier: 
+  Environment: 0
+  ManuelStart: 0
+  LogLevel: 1
+  ClientKey: 
+  ClientSecret: 
+  iOSUserTrackingDisabled: 0
+  iOSUserTrackingUsageDescription: 

@@ -1,0 +1,16 @@
+{
+    "name": "Metriqus.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c0e158a3cc76a39488d604d15862694e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
