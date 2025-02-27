@@ -76,3 +76,6 @@ crashlytics-build.properties
 /[Ss]amples/
 /[Ss]amples/*
 [Ss]amples.meta
+
+/[Ss]cripts/[Rr]untime/AssemblyInfo.cs
+/[Ss]cripts/[Rr]untime/AssemblyInfo.cs.meta
