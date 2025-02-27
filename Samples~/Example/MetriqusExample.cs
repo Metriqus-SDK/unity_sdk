@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace MetriqusSdk.Example
 {
-    public class Example : MonoBehaviour
+    public class MetriqusExample : MonoBehaviour
     {
         [SerializeField]
         private TextMeshProUGUI logText;

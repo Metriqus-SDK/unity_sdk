@@ -1,6 +1,6 @@
 {
   "name": "com.resolve.resolvebase",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "Metriqus Unity SDK",
   "description": "Metriqus SDK for Unity",
   "unity": "2022.3",
@@ -8,8 +8,7 @@
   "changelogUrl": "https://example.com/changelog.html",
   "licensesUrl": "https://example.com/licensing.html",
   "author": {
-    "name": "Resolve",
-    "email": "ensar.eray.1994@gmail.com",
+    "name": "Metriqus",
     "url": "https://www.unity3d.com"
   },
   "samples": [
