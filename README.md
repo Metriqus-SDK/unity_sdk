@@ -53,6 +53,93 @@ The Metriqus SDK starts when the app's Awake event triggers by default. To overr
 Metriqus.InitSdk(metriqusSettings);
 ```
 
+## Metriqus SDK Tracking API
+
+The following functions allow you to track user events, ad revenue, and other analytics-related actions within your Unity project.
+
+### Event Tracking Functions
+
+- **`TrackIAPEvent(MetriqusInAppRevenue metriqusEvent)`**  
+  Tracks in-app purchase (IAP) events.
+
+- **`TrackCustomEvent(MetriqusCustomEvent _event)`**  
+  Tracks custom events with user-defined parameters.
+
+- **`TrackPerformance(int fps, List<TypedParameter> parameters = null)`**  
+  Tracks FPS and other performance-related metrics.
+
+- **`TrackItemUsed(MetriqusItemUsedEvent _event)`**  
+  Tracks when an item (currency, equipment, etc.) is used.
+
+- **`TrackLevelStarted(MetriqusLevelStartedEvent _event)`**  
+  Tracks when a level starts.
+
+- **`TrackLevelCompleted(MetriqusLevelCompletedEvent _event)`**  
+  Tracks when a level is completed.
+
+- **`TrackCampaignAction(MetriqusCampaignActionEvent _event)`**  
+  Tracks campaign-related actions such as "Showed", "Clicked", "Closed", or "Purchased".
+
+- **`TrackScreenView(string screenName, List<TypedParameter> parameters = null)`**  
+  Tracks when a user views a specific screen in the app.
+
+- **`TrackButtonClick(string buttonName, List<TypedParameter> parameters = null)`**  
+  Tracks button click events.
+
+### Ad Revenue Tracking Functions
+
+- **`TrackApplovinAdRevenue(MetriqusApplovinAdRevenue matriqusAdRevenue)`**  
+  Tracks ad revenue from Applovin.
+
+- **`TrackAdmobAdRevenue(MetriqusAdmobAdRevenue matriqusAdRevenue)`**  
+  Tracks ad revenue from AdMob.
+
+- **`TrackAdRevenue(MetriqusAdRevenue matriqusAdRevenue)`**  
+  Tracks general ad revenue.
+
+### User Attribute Functions
+
+- **`SetUserAttribute(TypedParameter parameter)`**  
+  Sets a user attribute.
+
+- **`GetUserAttributes()`**  
+  Retrieves all user attributes.
+
+- **`RemoveUserAttribute(string key)`**  
+  Removes a specific user attribute by key.
+
+### Device and Geolocation Functions
+
+- **`GetAdid()`**  
+  Retrieves the Advertising ID (AdID) of the user.
+
+- **`GetMetriqusSettings()`**  
+  Retrieves the Metriqus SDK settings.
+
+- **`GetGeolocation()`**  
+  Retrieves geolocation data.
+
+- **`GetDeviceInfo()`**  
+  Retrieves device information.
+
+- **`GetUniqueUserId()`**  
+  Retrieves the unique user identifier.
+
+### SDK State and Tracking Control
+
+- **`IsInitialized()`**  
+  Checks whether the Metriqus SDK is initialized.
+
+- **`IsTrackingEnabled()`**  
+  Checks whether tracking is enabled.
+
+### Notes
+
+- These functions are primarily designed for **Unity Android/iOS** platforms.
+- Calls made outside these platforms will log an error message.
+- Ensure the SDK is initialized before calling tracking-related functions.
+
+
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
