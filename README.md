@@ -26,9 +26,31 @@ To install the Metriqus SDK with the Unity Package Manager, follow these steps:
 
 - Select the Package Manager window in the Unity editor.
 - Select Add package from git URL.
-- Enter the following URL: 
-```bash
-https://github.com/Metriqus-SDK/unity_sdk.git
+- Enter the following URL: ```https://github.com/Metriqus-SDK/unity_sdk.git```
+- After importing the package navigate to `Window -> Package Manager -> Metriqus Unity SDK -> Samples` for importing SDK examples and essential assets.
+
+# Integrate the SDK
+The Metriqus SDK contains a Unity prefab that includes Metriqus script. The Metriqus script references to a settings asset. You can edit settings file to your needs. To open the prefab in the Unity editor:
+
+1. After importing samples, add the Metriqus prefab to your first scene from:
+```Assets/Samples/Metriqus Unity SDK/{version}/Samples/Prefabs/Metriqus.prefab```
+
+2. Open the prefab Inspector Menu.
+3. The prefab menu contains a settings reference to edit SDK behavior.
+
+#### To set up the Metriqus SDK, enter the following information to your settings asset:
+
+- **Client Key**: Check you dashboard for instructions to find your client key.
+- **Client Secret**: Check you dashboard for instructions to find your client secret.
+- **Environment**:
+  - Choose **Sandbox** if you are testing your app and want to send test data. You need to enable sandbox mode in the dashboard to see test data.
+  - Choose **Production** when you have finished testing and are ready to release your app.
+- **Log Level**: This controls what logs you receive.
+
+The Metriqus SDK starts when the app's Awake event triggers by default. To override this behavior, check the **Manuel Start** option. This enables you to initialize the Metriqus SDK by calling Metriqus.InitSdk with your referenced MetriqusSettings asset as parameter.
+
+```
+Metriqus.InitSdk(metriqusSettings);
 ```
 
 ## License
