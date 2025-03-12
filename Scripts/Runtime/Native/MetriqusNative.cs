@@ -12,6 +12,7 @@ namespace MetriqusSdk
     {
         private const string FirstLaunchKey = "metriqus_first_launch";
         private const string LastSessionStartTimeKey = "metriqus_last_session_start_time";
+        private const string SessionIdKey = "metriqus_session_id";
         private const string LastSendAttributionDateKey = "metriqus_last_send_attribution_date";
         private const string RemoteSettingsKey = "metriqus_remote_settings";
         private const string GeolocationKey = "geolocation_settings";
@@ -175,7 +176,7 @@ namespace MetriqusSdk
                 string lastSessionStartTimeStr = storage.LoadData(LastSessionStartTimeKey);
                 DateTime lastSessionStartTime = MetriqusUtils.ParseDate(lastSessionStartTimeStr);
 
-                var remoteSettings = Metriqus.GetMetriqusRemoteSettings();
+                var remoteSettings = GetMetriqusRemoteSettings();
 
                 double passedMinutesSinceLastSession = (currentTime.Subtract(lastSessionStartTime)).TotalMinutes;
 
@@ -185,13 +186,30 @@ namespace MetriqusSdk
                 if (passedMinutesSinceLastSession >= remoteSettings.SessionIntervalMinutes)
                 {
                     sessionId = Guid.NewGuid().ToString();
+                    storage.SaveData(SessionIdKey, sessionId);
+
                     packageSender.SendSessionStartPackage();
+                }
+                else
+                {
+                    bool isSessionIdKeyExist = storage.CheckKeyExist(SessionIdKey);
+
+                    if (isSessionIdKeyExist)
+                    {
+                        sessionId = storage.LoadData(SessionIdKey);
+                    }
+                    else
+                    {
+                        sessionId = Guid.NewGuid().ToString();
+                    }
                 }
             }
             else
             {
                 // THIS IS THE FIRST SESSION
                 sessionId = Guid.NewGuid().ToString();
+                storage.SaveData(SessionIdKey, sessionId);
+
                 packageSender.SendSessionStartPackage();
             }
 
@@ -293,7 +311,7 @@ namespace MetriqusSdk
         {
             bool isIsFirstLaunchKeyExist = storage.CheckKeyExist(FirstLaunchKey);
 
-            if (!isIsFirstLaunchKeyExist)
+            if (isIsFirstLaunchKeyExist)
             {
                 return storage.LoadIntData(FirstLaunchKey);
             }

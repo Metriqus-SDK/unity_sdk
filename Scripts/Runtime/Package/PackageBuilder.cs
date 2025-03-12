@@ -406,7 +406,14 @@ namespace MetriqusSdk
 
         public override string ToString()
         {
-            string s = "";
+            string s = $"event_id:{eventId},\n";
+            s += $"sessionId:{sessionId},\n";
+            s += $"clientSdk:{clientSdk},\n";
+            s += $"isFirstLaunch:{isFirstLaunch},\n";
+            s += $"userId:{userId},\n";
+            s += $"eventTimestamp:{eventTimestamp},\n";
+            s += $"environment:{environment},\n";
+
             if (parameters != null)
             {
                 s += "Typed Parameters: \n";
