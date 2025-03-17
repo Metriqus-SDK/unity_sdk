@@ -12,6 +12,7 @@ namespace MetriqusSdk
     /// </summary>
     internal class MetriqusAttribution
     {
+        public string Raw { get; set; }
 #if UNITY_IOS
         /// <summary>
         /// Indicates whether attribution was successful.
@@ -79,6 +80,7 @@ namespace MetriqusSdk
 
             MetriqusAttribution mAttribution = new();
 
+            mAttribution.Raw = attributionJsonString;
             try { mAttribution.Attribution = bool.Parse(MetriqusJSON.GetJsonString(jsonNode, "attribution")); } catch (Exception) { }
             try { mAttribution.OrgId = long.Parse(MetriqusJSON.GetJsonString(jsonNode, "orgId")); } catch (Exception) { }
             try { mAttribution.CampaignId = long.Parse(MetriqusJSON.GetJsonString(jsonNode, "campaignId")); } catch (Exception) { }
@@ -94,72 +96,73 @@ namespace MetriqusSdk
         }
 
 #elif UNITY_ANDROID
-    /// <summary>
-    /// The source of the attribution (e.g., Google, Facebook).
-    /// </summary>
-    public string Source { get; set; }
+        /// <summary>
+        /// The source of the attribution (e.g., Google, Facebook).
+        /// </summary>
+        public string Source { get; set; }
 
-    /// <summary>
-    /// The marketing medium (e.g., CPC, organic).
-    /// </summary>
-    public string Medium { get; set; }
+        /// <summary>
+        /// The marketing medium (e.g., CPC, organic).
+        /// </summary>
+        public string Medium { get; set; }
 
-    /// <summary>
-    /// The campaign name associated with the attribution.
-    /// </summary>
-    public string Campaign { get; set; }
+        /// <summary>
+        /// The campaign name associated with the attribution.
+        /// </summary>
+        public string Campaign { get; set; }
 
-    /// <summary>
-    /// The search term that led to the attribution.
-    /// </summary>
-    public string Term { get; set; }
+        /// <summary>
+        /// The search term that led to the attribution.
+        /// </summary>
+        public string Term { get; set; }
 
-    /// <summary>
-    /// Additional content metadata related to the ad.
-    /// </summary>
-    public string Content { get; set; }
+        /// <summary>
+        /// Additional content metadata related to the ad.
+        /// </summary>
+        public string Content { get; set; }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MetriqusAttribution"/> class.
-    /// </summary>
-    public MetriqusAttribution() { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MetriqusAttribution"/> class.
+        /// </summary>
+        public MetriqusAttribution() { }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MetriqusAttribution"/> class using a referrer URL.
-    /// </summary>
-    /// <param name="referrerUrl">The referrer URL containing attribution parameters.</param>
-    public MetriqusAttribution(string referrerUrl)
-    {
-        var queryDict = MetriqusUtils.ParseAndSanitize(referrerUrl);
-        ParseDict(queryDict);
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MetriqusAttribution"/> class using a dictionary of attribution data.
-    /// </summary>
-    /// <param name="dicAttributionData">A dictionary containing attribution key-value pairs.</param>
-    public MetriqusAttribution(Dictionary<string, string> dicAttributionData)
-    {
-        ParseDict(dicAttributionData);
-    }
-
-    /// <summary>
-    /// Parses and assigns values from a dictionary of attribution data.
-    /// </summary>
-    /// <param name="dicAttributionData">A dictionary containing attribution key-value pairs.</param>
-    private void ParseDict(Dictionary<string, string> dicAttributionData)
-    {
-        if (dicAttributionData == null)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MetriqusAttribution"/> class using a referrer URL.
+        /// </summary>
+        /// <param name="referrerUrl">The referrer URL containing attribution parameters.</param>
+        public MetriqusAttribution(string referrerUrl)
         {
-            return;
+            var queryDict = MetriqusUtils.ParseAndSanitize(referrerUrl);
+            ParseDict(queryDict, referrerUrl);
         }
 
-        this.Source = MetriqusUtils.TryGetValue(dicAttributionData, MetriqusUtils.KeySource);
-        this.Medium = MetriqusUtils.TryGetValue(dicAttributionData, MetriqusUtils.KeyMedium);
-        this.Campaign = MetriqusUtils.TryGetValue(dicAttributionData, MetriqusUtils.KeyCampaign);
-        this.Term = MetriqusUtils.TryGetValue(dicAttributionData, MetriqusUtils.KeyCampaign);
-        this.Content = MetriqusUtils.TryGetValue(dicAttributionData, MetriqusUtils.KeyContent);
-    }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MetriqusAttribution"/> class using a dictionary of attribution data.
+        /// </summary>
+        /// <param name="dicAttributionData">A dictionary containing attribution key-value pairs.</param>
+        public MetriqusAttribution(Dictionary<string, string> dicAttributionData, string referrerUrl)
+        {
+            ParseDict(dicAttributionData, referrerUrl);
+        }
+
+        /// <summary>
+        /// Parses and assigns values from a dictionary of attribution data.
+        /// </summary>
+        /// <param name="dicAttributionData">A dictionary containing attribution key-value pairs.</param>
+        private void ParseDict(Dictionary<string, string> dicAttributionData, string referrerUrl)
+        {
+            if (dicAttributionData == null)
+            {
+                return;
+            }
+
+            this.Raw = referrerUrl;
+            this.Source = MetriqusUtils.TryGetValue(dicAttributionData, MetriqusUtils.KeySource);
+            this.Medium = MetriqusUtils.TryGetValue(dicAttributionData, MetriqusUtils.KeyMedium);
+            this.Campaign = MetriqusUtils.TryGetValue(dicAttributionData, MetriqusUtils.KeyCampaign);
+            this.Term = MetriqusUtils.TryGetValue(dicAttributionData, MetriqusUtils.KeyCampaign);
+            this.Content = MetriqusUtils.TryGetValue(dicAttributionData, MetriqusUtils.KeyContent);
+        }
 #endif
     }
 

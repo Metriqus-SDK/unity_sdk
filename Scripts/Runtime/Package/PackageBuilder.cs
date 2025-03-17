@@ -140,6 +140,7 @@ namespace MetriqusSdk
             AddString(attributionParams["ios"], "country_or_region", _attribution.CountryOrRegion);
             AddLong(attributionParams["ios"], "keyword_id", _attribution.KeywordId);
             AddLong(attributionParams["ios"], "attribution_ad_id", _attribution.AdId);
+            AddString(attributionParams["ios"], "raw", _attribution.Raw);
 #elif UNITY_ANDROID
             attributionParams.Add("android", new List<DynamicParameter>());
 
@@ -148,7 +149,9 @@ namespace MetriqusSdk
             AddString(attributionParams["android"], "campaign", _attribution.Campaign);
             AddString(attributionParams["android"], "term", _attribution.Term);
             AddString(attributionParams["android"], "content", _attribution.Content);
+            AddString(attributionParams["android"], "raw", _attribution.Raw);
 #endif
+
             package.attribution = attributionParams;
         }
 
