@@ -450,7 +450,7 @@ namespace MetriqusSdk
             return native.GetFirstLaunchTime();
 #else
             DebugLog(errorMsgPlatform);
-            return 0;
+            return DateTime.UtcNow;
 #endif
         }
 

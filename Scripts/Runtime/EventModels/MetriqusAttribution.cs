@@ -80,7 +80,7 @@ namespace MetriqusSdk
 
             MetriqusAttribution mAttribution = new();
 
-            mAttribution.Raw = attributionJsonString;
+            mAttribution.Raw = attributionJsonString.Replace('"', ' ');
             try { mAttribution.Attribution = bool.Parse(MetriqusJSON.GetJsonString(jsonNode, "attribution")); } catch (Exception) { }
             try { mAttribution.OrgId = long.Parse(MetriqusJSON.GetJsonString(jsonNode, "orgId")); } catch (Exception) { }
             try { mAttribution.CampaignId = long.Parse(MetriqusJSON.GetJsonString(jsonNode, "campaignId")); } catch (Exception) { }
@@ -156,7 +156,7 @@ namespace MetriqusSdk
                 return;
             }
 
-            this.Raw = referrerUrl;
+            this.Raw = referrerUrl.Replace('"', ' ');
             this.Source = MetriqusUtils.TryGetValue(dicAttributionData, MetriqusUtils.KeySource);
             this.Medium = MetriqusUtils.TryGetValue(dicAttributionData, MetriqusUtils.KeyMedium);
             this.Campaign = MetriqusUtils.TryGetValue(dicAttributionData, MetriqusUtils.KeyCampaign);
