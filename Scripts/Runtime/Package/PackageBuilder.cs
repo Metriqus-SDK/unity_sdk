@@ -243,7 +243,7 @@ namespace MetriqusSdk
                 isFirstLaunch: Metriqus.GetIsFirstLaunch(),
                 userId: Metriqus.GetUniqueUserId(),
                 eventTimestamp: MetriqusUtils.DateToTimestamp(createdAt),
-                userFirstTouchTimestamp: Metriqus.GetUserFirstTouchTimestamp(),
+                userFirstTouchTimestamp: MetriqusUtils.DateToTimestamp(Metriqus.GetUserFirstTouchTimestamp()),
                 environment: metriqusSettings?.Environment ?? MetriqusEnvironment.Sandbox);
         }
 
@@ -413,6 +413,7 @@ namespace MetriqusSdk
             s += $"userId:{userId},\n";
             s += $"eventTimestamp:{eventTimestamp},\n";
             s += $"environment:{environment},\n";
+            s += $"userFirstTouchTimestamp:{userFirstTouchTimestamp},\n";
 
             if (parameters != null)
             {

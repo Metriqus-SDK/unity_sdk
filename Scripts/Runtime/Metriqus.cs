@@ -442,10 +442,10 @@ namespace MetriqusSdk
 #endif
         }
 
-        internal static int GetUserFirstTouchTimestamp()
+        internal static DateTime GetUserFirstTouchTimestamp()
         {
 #if UNITY_ANDROID || UNITY_IOS
-            if (!IsInitialized()) return 0;
+            if (!IsInitialized()) return DateTime.UtcNow;
 
             return native.GetFirstLaunchTime();
 #else

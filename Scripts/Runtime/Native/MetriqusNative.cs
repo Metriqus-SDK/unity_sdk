@@ -10,7 +10,7 @@ namespace MetriqusSdk
 {
     internal abstract class MetriqusNative
     {
-        private const string FirstLaunchKey = "metriqus_first_launch";
+        private const string FirstLaunchTimeKey = "metriqus_first_launch_time";
         private const string LastSessionStartTimeKey = "metriqus_last_session_start_time";
         private const string SessionIdKey = "metriqus_session_id";
         private const string LastSendAttributionDateKey = "metriqus_last_send_attribution_date";
@@ -295,28 +295,30 @@ namespace MetriqusSdk
 
         private void ProcessIsFirstLaunch()
         {
-            bool isIsFirstLaunchKeyExist = storage.CheckKeyExist(FirstLaunchKey);
+            bool isFirstLaunchTimeKeyExist = storage.CheckKeyExist(FirstLaunchTimeKey);
 
-            if (!isIsFirstLaunchKeyExist)
+            if (!isFirstLaunchTimeKeyExist)
             {
                 isFirstLaunch = true;
 
-                storage.SaveData(FirstLaunchKey, MetriqusJSON.SerializeValue(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()));
+                storage.SaveData(FirstLaunchTimeKey, MetriqusUtils.ConvertDateToString(DateTime.UtcNow));
 
                 onFirstLaunch?.Invoke();
             }
         }
 
-        internal int GetFirstLaunchTime()
+        internal DateTime GetFirstLaunchTime()
         {
-            bool isIsFirstLaunchKeyExist = storage.CheckKeyExist(FirstLaunchKey);
+            bool isIsFirstLaunchKeyExist = storage.CheckKeyExist(FirstLaunchTimeKey);
 
             if (isIsFirstLaunchKeyExist)
             {
-                return storage.LoadIntData(FirstLaunchKey);
+                string firstLaunchTime = storage.LoadData(FirstLaunchTimeKey);
+                return MetriqusUtils.ParseDate(firstLaunchTime);
+
             }
 
-            return 0;
+            return DateTime.UtcNow;
         }
 
         internal MetriqusSettings GetMetriqusSettings()
