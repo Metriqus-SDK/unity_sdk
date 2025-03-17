@@ -71,18 +71,21 @@ namespace MetriqusSdk
                 MetriqusLogger.Init(storage);
 
                 isInitialized = true;
-
-                ProcessIsFirstLaunch();
-
-                ProcessSession();
-
-                ProcessAttribution();
+                Metriqus.OnSdkInitialize?.Invoke(true);
             }
             catch (Exception e)
             {
-                if (Metriqus.LogLevel != LogLevel.NoLog)
-                    Metriqus.DebugLog("Error while initializing Native: " + e, LogType.Error);
+                Metriqus.OnSdkInitialize?.Invoke(false);
+
+                Metriqus.DebugLog("Error while initializing Native: " + e.Message, LogType.Error);
             }
+
+
+            ProcessIsFirstLaunch();
+
+            ProcessSession();
+
+            ProcessAttribution();
         }
 
         internal string GetAdid() => adId;
@@ -152,8 +155,7 @@ namespace MetriqusSdk
 
         internal void OnResume()
         {
-            if (Metriqus.LogLevel != LogLevel.NoLog)
-                Metriqus.DebugLog("Application resumed. Processing session.");
+            Metriqus.DebugLog("Application resumed. Processing session.");
             ProcessSession();
         }
 
@@ -164,69 +166,77 @@ namespace MetriqusSdk
 
         private void ProcessSession()
         {
-            DateTime currentTime = DateTime.UtcNow;
-
-            // check is this first session by checking lastSessionStartTimeKey exist
-            bool isLastSessionStartTimeSaved = storage.CheckKeyExist(LastSessionStartTimeKey);
-
-            // if LastSessionStartTimeKey already saved, it means this is not first session
-            if (isLastSessionStartTimeSaved == true)
+            try
             {
-                // THIS IS NOT FIRST SESSION
-                string lastSessionStartTimeStr = storage.LoadData(LastSessionStartTimeKey);
-                DateTime lastSessionStartTime = MetriqusUtils.ParseDate(lastSessionStartTimeStr);
+                DateTime currentTime = DateTime.UtcNow;
 
-                var remoteSettings = GetMetriqusRemoteSettings();
+                // check is this first session by checking lastSessionStartTimeKey exist
+                bool isLastSessionStartTimeSaved = storage.CheckKeyExist(LastSessionStartTimeKey);
 
-                double passedMinutesSinceLastSession = (currentTime.Subtract(lastSessionStartTime)).TotalMinutes;
+                // if LastSessionStartTimeKey already saved, it means this is not first session
+                if (isLastSessionStartTimeSaved == true)
+                {
+                    // THIS IS NOT FIRST SESSION
+                    string lastSessionStartTimeStr = storage.LoadData(LastSessionStartTimeKey);
+                    DateTime lastSessionStartTime = MetriqusUtils.ParseDate(lastSessionStartTimeStr);
 
-                if (Metriqus.LogLevel != LogLevel.NoLog)
+                    var remoteSettings = GetMetriqusRemoteSettings();
+
+                    double passedMinutesSinceLastSession = (currentTime.Subtract(lastSessionStartTime)).TotalMinutes;
+
                     Metriqus.DebugLog("Passed Minutes Since Last Session: " + passedMinutesSinceLastSession);
 
-                if (passedMinutesSinceLastSession >= remoteSettings.SessionIntervalMinutes)
+                    if (passedMinutesSinceLastSession >= remoteSettings.SessionIntervalMinutes)
+                    {
+                        sessionId = Guid.NewGuid().ToString();
+                        storage.SaveData(SessionIdKey, sessionId);
+
+                        packageSender.SendSessionStartPackage();
+                    }
+                    else
+                    {
+                        bool isSessionIdKeyExist = storage.CheckKeyExist(SessionIdKey);
+
+                        if (isSessionIdKeyExist)
+                        {
+                            sessionId = storage.LoadData(SessionIdKey);
+                        }
+                        else
+                        {
+                            sessionId = Guid.NewGuid().ToString();
+                        }
+                    }
+                }
+                else
                 {
+                    // THIS IS THE FIRST SESSION
                     sessionId = Guid.NewGuid().ToString();
                     storage.SaveData(SessionIdKey, sessionId);
 
                     packageSender.SendSessionStartPackage();
                 }
-                else
-                {
-                    bool isSessionIdKeyExist = storage.CheckKeyExist(SessionIdKey);
 
-                    if (isSessionIdKeyExist)
-                    {
-                        sessionId = storage.LoadData(SessionIdKey);
-                    }
-                    else
-                    {
-                        sessionId = Guid.NewGuid().ToString();
-                    }
-                }
+                storage.SaveData(LastSessionStartTimeKey, MetriqusUtils.ConvertDateToString(currentTime));
             }
-            else
+            catch (Exception e)
             {
-                // THIS IS THE FIRST SESSION
-                sessionId = Guid.NewGuid().ToString();
-                storage.SaveData(SessionIdKey, sessionId);
-
-                packageSender.SendSessionStartPackage();
+                Metriqus.DebugLog("An error occured ProcessSession: " + e.Message, LogType.Error);
             }
-
-            storage.SaveData(LastSessionStartTimeKey, MetriqusUtils.ConvertDateToString(currentTime));
         }
 
         private void ProcessAttribution()
         {
-            /*if (Metriqus.LogLevel != LogLevel.NoLog)
-                Metriqus.DebugLog("ProcessAttribution");*/
-
-            // Cancel attribution on ios platform if tracking disabled
-            if (isTrackingEnabled == false)
+            try
             {
-                Metriqus.DebugLog("ProcessAttribution canceled: user not allowed tracking");
-                return;
-            }
+                /*if (Metriqus.LogLevel != LogLevel.NoLog)
+                    Metriqus.DebugLog("ProcessAttribution");*/
+
+                // Cancel attribution on ios platform if tracking disabled
+                if (isTrackingEnabled == false)
+                {
+                    Metriqus.DebugLog("ProcessAttribution canceled: user not allowed tracking");
+                    return;
+                }
 
 #if UNITY_IOS
             // Cancel attribution on ios platform if tracking disabled
@@ -237,73 +247,80 @@ namespace MetriqusSdk
             }
 #endif
 
-            DateTime currentDate = DateTime.UtcNow;
+                DateTime currentDate = DateTime.UtcNow;
 
-            void sendAttr()
-            {
-                ReadAttribution(
-                    (attribution) =>
-                    {
-                        if (Metriqus.LogLevel != LogLevel.NoLog)
-                            Metriqus.DebugLog("Attribution read successfuly: " + JsonUtility.ToJson(attribution));
+                void sendAttr()
+                {
+                    ReadAttribution(
+                        (attribution) =>
+                        {
+                            packageSender.SendAttributionPackage(attribution);
 
-                        packageSender.SendAttributionPackage(attribution);
-
-                        storage.SaveData(LastSendAttributionDateKey, MetriqusUtils.ConvertDateToString(currentDate));
-                    },
-                    (error) =>
-                    {
-                        if (Metriqus.LogLevel != LogLevel.NoLog)
+                            storage.SaveData(LastSendAttributionDateKey, MetriqusUtils.ConvertDateToString(currentDate));
+                        },
+                        (error) =>
+                        {
                             Metriqus.DebugLog("Attribution read error: " + error, LogType.Warning);
-                    });
-            }
-            ;
-
-            GetInstallTime((installTime) =>
-            {
-                DateTime installDate = DateTimeOffset.FromUnixTimeMilliseconds(installTime).DateTime;
-
-                bool lastSendAttributionDateExist = storage.CheckKeyExist(LastSendAttributionDateKey);
-
-                var remoteSettings = GetMetriqusRemoteSettings();
-
-                if (currentDate.Subtract(installDate).Days < remoteSettings.AttributionCheckWindow)
-                {
-                    // if it has been 20 days send attribution 
-                    sendAttr();
+                        });
                 }
-                else if (!lastSendAttributionDateExist)
-                {
-                    // if didnt send any attribution send it
-                    sendAttr();
-                }
-                else
-                {
-                    // if last attribution send date before 20 days and now it passed 
-                    // 20 send last one more time
-                    string lastAttributionDateStr = storage.LoadData(LastSendAttributionDateKey);
-                    DateTime lastAttributionDate = MetriqusUtils.ParseDate(lastAttributionDateStr);
 
-                    if (lastAttributionDate.Subtract(installDate).Days < remoteSettings.AttributionCheckWindow
-                        && currentDate.Subtract(installDate).Days > remoteSettings.AttributionCheckWindow)
+                GetInstallTime((installTime) =>
+                {
+                    DateTime installDate = DateTimeOffset.FromUnixTimeMilliseconds(installTime).DateTime;
+
+                    bool lastSendAttributionDateExist = storage.CheckKeyExist(LastSendAttributionDateKey);
+
+                    var remoteSettings = GetMetriqusRemoteSettings();
+
+                    if (currentDate.Subtract(installDate).Days < remoteSettings.AttributionCheckWindow)
                     {
+                        // if it has been 20 days send attribution 
                         sendAttr();
                     }
-                }
-            });
+                    else if (!lastSendAttributionDateExist)
+                    {
+                        // if didnt send any attribution send it
+                        sendAttr();
+                    }
+                    else
+                    {
+                        // if last attribution send date before 20 days and now it passed 
+                        // 20 send last one more time
+                        string lastAttributionDateStr = storage.LoadData(LastSendAttributionDateKey);
+                        DateTime lastAttributionDate = MetriqusUtils.ParseDate(lastAttributionDateStr);
+
+                        if (lastAttributionDate.Subtract(installDate).Days < remoteSettings.AttributionCheckWindow
+                            && currentDate.Subtract(installDate).Days > remoteSettings.AttributionCheckWindow)
+                        {
+                            sendAttr();
+                        }
+                    }
+                });
+            }
+            catch (Exception e)
+            {
+                Metriqus.DebugLog("An error occured on ProcessAttribution: " + e.Message, LogType.Error);
+            }
         }
 
         private void ProcessIsFirstLaunch()
         {
-            bool isFirstLaunchTimeKeyExist = storage.CheckKeyExist(FirstLaunchTimeKey);
-
-            if (!isFirstLaunchTimeKeyExist)
+            try
             {
-                isFirstLaunch = true;
+                bool isFirstLaunchTimeKeyExist = storage.CheckKeyExist(FirstLaunchTimeKey);
 
-                storage.SaveData(FirstLaunchTimeKey, MetriqusUtils.ConvertDateToString(DateTime.UtcNow));
+                if (!isFirstLaunchTimeKeyExist)
+                {
+                    isFirstLaunch = true;
 
-                onFirstLaunch?.Invoke();
+                    storage.SaveData(FirstLaunchTimeKey, MetriqusUtils.ConvertDateToString(DateTime.UtcNow));
+
+                    onFirstLaunch?.Invoke();
+                }
+            }
+            catch (Exception e)
+            {
+                Metriqus.DebugLog("An error occured on ProcessIsFirstLaunch: " + e.Message, LogType.Error);
             }
         }
 
@@ -353,13 +370,12 @@ namespace MetriqusSdk
             if (DateTime.UtcNow.Subtract(geolocationLastFetchedTime).Days > remoteSettings.GeolocationFetchIntervalDays)
             {
                 // it passed {remoteSettings.GeolocationFetchIntervalDays} since last fetched geolocation
-                if (Metriqus.LogLevel == LogLevel.Verbose)
-                    Metriqus.DebugLog($"Fetching geolocating. Last Fetched at: {geolocationLastFetchedTime.ToString()}");
+                Metriqus.DebugLog($"Fetching geolocating. Last Fetched at: {geolocationLastFetchedTime.ToString()}");
 
                 var fetchedGeolocation = await IPGeolocation.GetCountryByIP();
 
                 fetchingSuccessful = fetchedGeolocation != null;
-                
+
                 info = fetchedGeolocation;
             }
 
@@ -430,9 +446,6 @@ namespace MetriqusSdk
                 storage.SaveData(RemoteSettingsKey, mro.Data);
                 remoteSettingsFetched = true;
 
-                /*if (Metriqus.LogLevel != LogLevel.NoLog)
-                    Metriqus.DebugLog($"Remote Settings Fetched: {mro.Data}");*/
-
                 return true;
             }
             else if (remoteSettings == null)
@@ -449,7 +462,7 @@ namespace MetriqusSdk
                 else
                 {
                     remoteSettings = new MetriqusRemoteSettings();
-                    Metriqus.DebugLog($"Remote Settings couldn't fetched or couldn't loaded from storage: {JsonUtility.ToJson(remoteSettings)}", LogType.Warning);
+                    Metriqus.DebugLog($"Remote Settings couldn't fetched or couldn't loaded from storage, using default", LogType.Warning);
                 }
             }
 

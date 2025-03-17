@@ -96,8 +96,7 @@ namespace MetriqusSdk
                 if (eventQueue.Events.Count >= remoteSettings.MaxEventBatchCount
                     || (currentTime.Subtract(lastFlushTime).TotalSeconds) > (remoteSettings.MaxEventStoreSeconds))
                 {
-                    if (Metriqus.LogLevel != LogLevel.NoLog)
-                        Metriqus.DebugLog("Checked sending events. EventQueue count : " + eventQueue.Events.Count + ", passedSeconds: " + (currentTime.Subtract(lastFlushTime).TotalSeconds));
+                    Metriqus.DebugLog("Checked sending events. EventQueue count : " + eventQueue.Events.Count + ", passedSeconds: " + (currentTime.Subtract(lastFlushTime).TotalSeconds));
 
                     // save last event send time
                     storage.SaveData(LastFlushTimeKey, MetriqusUtils.ConvertDateToString(currentTime));
@@ -153,7 +152,7 @@ namespace MetriqusSdk
             }
             catch (Exception ex)
             {
-                Metriqus.DebugLog("Event Send Process failed. Error: " + ex.ToString(), LogType.Error);
+                Metriqus.DebugLog("Event Send Process failed. Error: " + ex.Message, LogType.Error);
             }
         }
 
@@ -164,9 +163,6 @@ namespace MetriqusSdk
         private async Task<bool> Flush()
         {
             var selectedEventQueue = eventsToSend.Peek();
-
-            if (Metriqus.LogLevel != LogLevel.NoLog)
-                Metriqus.DebugLog("Flushing event count: " + selectedEventQueue.Events.Count);
 
             bool result = await EventRequestSender.PostEventBatch(selectedEventQueue.Serialize());
 
@@ -241,7 +237,7 @@ namespace MetriqusSdk
                 }
                 catch (Exception ex)
                 {
-                    Metriqus.DebugLog(ex.Message, LogType.Error);
+                    Metriqus.DebugLog("LoadEventsToSend failed :" + ex.Message, LogType.Error);
                     eventsToSend = new();
                 }
             }

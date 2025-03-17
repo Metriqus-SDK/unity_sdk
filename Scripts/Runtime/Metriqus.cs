@@ -22,19 +22,17 @@ namespace MetriqusSdk
 
         private static LogLevel logLevel = LogLevel.Verbose;
 
-        private static UnityEvent<string, LogType> onLog;
+        private static UnityEvent<string, LogType> onLog = new();
+        private static UnityEvent<bool> onSdkInitialize = new();
 
         private static readonly Queue<Action> _executionQueue = new Queue<Action>();
 
         public static UnityEvent<string, LogType> OnLog => onLog;
+        public static UnityEvent<bool> OnSdkInitialize => onSdkInitialize;
         public static LogLevel LogLevel => logLevel;
 
         void Awake()
         {
-            //DebugLog("Awake");
-            // initialize events
-            onLog = new UnityEvent<string, LogType>();
-
             StartCoroutine(SavePassedTimeEveryMinute());
 
             if (IsEditor())
@@ -77,7 +75,7 @@ namespace MetriqusSdk
 
             if (metriqusSettings == null)
             {
-                DebugLog("Missing settings to start.", LogType.Error);
+                DebugLog("InitSdk missing settings to start.", LogType.Error);
                 return;
             }
 
@@ -554,11 +552,10 @@ namespace MetriqusSdk
                         onLog?.Invoke(log, logType);
                     });
                 }
-                else if (logLevel != LogLevel.NoLog)
+                else if (logLevel == LogLevel.Verbose)
                 {
                     if (logType == LogType.Warning)
                     {
-                        if (logLevel == LogLevel.ErrorsOnly) return;
                         EnqueueCallback(() =>
                         {
                             log = $"[MetriqusWarning]: {log}\n";
@@ -569,7 +566,6 @@ namespace MetriqusSdk
                     }
                     else
                     {
-                        if (logLevel == LogLevel.ErrorsOnly) return;
                         EnqueueCallback(() =>
                         {
                             log = $"\n[Metriqus]: {log}\n";

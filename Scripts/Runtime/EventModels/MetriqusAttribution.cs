@@ -121,6 +121,9 @@ namespace MetriqusSdk
         /// </summary>
         public string Content { get; set; }
 
+        public List<TypedParameter> Params { get; set; } = null;
+
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MetriqusAttribution"/> class.
         /// </summary>
@@ -139,29 +142,47 @@ namespace MetriqusSdk
         /// <summary>
         /// Initializes a new instance of the <see cref="MetriqusAttribution"/> class using a dictionary of attribution data.
         /// </summary>
-        /// <param name="dicAttributionData">A dictionary containing attribution key-value pairs.</param>
-        public MetriqusAttribution(Dictionary<string, string> dicAttributionData, string referrerUrl)
+        /// <param name="dictAttributionData">A dictionary containing attribution key-value pairs.</param>
+        public MetriqusAttribution(Dictionary<string, string> dictAttributionData, string referrerUrl)
         {
-            ParseDict(dicAttributionData, referrerUrl);
+            ParseDict(dictAttributionData, referrerUrl);
         }
 
         /// <summary>
         /// Parses and assigns values from a dictionary of attribution data.
         /// </summary>
-        /// <param name="dicAttributionData">A dictionary containing attribution key-value pairs.</param>
-        private void ParseDict(Dictionary<string, string> dicAttributionData, string referrerUrl)
+        /// <param name="dictAttributionData">A dictionary containing attribution key-value pairs.</param>
+        private void ParseDict(Dictionary<string, string> dictAttributionData, string referrerUrl)
         {
-            if (dicAttributionData == null)
+            if (dictAttributionData == null)
             {
                 return;
             }
 
             this.Raw = referrerUrl.Replace('"', ' ');
-            this.Source = MetriqusUtils.TryGetValue(dicAttributionData, MetriqusUtils.KeySource);
-            this.Medium = MetriqusUtils.TryGetValue(dicAttributionData, MetriqusUtils.KeyMedium);
-            this.Campaign = MetriqusUtils.TryGetValue(dicAttributionData, MetriqusUtils.KeyCampaign);
-            this.Term = MetriqusUtils.TryGetValue(dicAttributionData, MetriqusUtils.KeyCampaign);
-            this.Content = MetriqusUtils.TryGetValue(dicAttributionData, MetriqusUtils.KeyContent);
+
+            this.Source = MetriqusUtils.TryGetValue(dictAttributionData, MetriqusUtils.KeySource);
+            this.Medium = MetriqusUtils.TryGetValue(dictAttributionData, MetriqusUtils.KeyMedium);
+            this.Campaign = MetriqusUtils.TryGetValue(dictAttributionData, MetriqusUtils.KeyCampaign);
+            this.Term = MetriqusUtils.TryGetValue(dictAttributionData, MetriqusUtils.KeyTerm);
+            this.Content = MetriqusUtils.TryGetValue(dictAttributionData, MetriqusUtils.KeyContent);
+
+            foreach (var item in dictAttributionData)
+            {
+                if (item.Key == MetriqusUtils.KeySource
+                    || item.Key == MetriqusUtils.KeyMedium
+                    || item.Key == MetriqusUtils.KeyCampaign
+                    || item.Key == MetriqusUtils.KeyTerm
+                    || item.Key == MetriqusUtils.KeyContent)
+                {
+                    continue;
+                }
+
+                if (Params == null)
+                    this.Params = new();
+
+                this.Params.Add(new TypedParameter(item.Key, item.Value));
+            }
         }
 #endif
     }

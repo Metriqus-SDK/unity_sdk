@@ -23,7 +23,7 @@ namespace MetriqusSdk
 
                 if (remoteSettings == null || String.IsNullOrEmpty(remoteSettings.EventPostUrl))
                 {
-                    Metriqus.DebugLog("Can't find event post url", LogType.Warning);
+                    Metriqus.DebugLog("Can't find the event post url", LogType.Warning);
                     return false;
                 }
                 else
@@ -66,7 +66,7 @@ namespace MetriqusSdk
             }
             catch (Exception e)
             {
-                Metriqus.DebugLog($"Sending events failed. Error: {e.ToString()}", LogType.Error);
+                Metriqus.DebugLog($"Sending events failed. Error: {e.Message}", LogType.Error);
 
                 return false;
             }

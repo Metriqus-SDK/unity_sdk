@@ -150,6 +150,8 @@ namespace MetriqusSdk
             AddString(attributionParams["android"], "term", _attribution.Term);
             AddString(attributionParams["android"], "content", _attribution.Content);
             AddString(attributionParams["android"], "raw", _attribution.Raw);
+            AddList(attributionParams["android"], "params", _attribution.Params);
+
 #endif
 
             package.attribution = attributionParams;
@@ -469,7 +471,7 @@ namespace MetriqusSdk
                 {
                     foreach (var item1 in item.Value)
                     {
-                        s += item1.Name + ": " + item1.Value + ",\n";
+                        s += item1.Name + ": " + MetriqusJSON.SerializeValue(item1.Value) + ",\n";
                     }
                 }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MetriqusSdk
 {
@@ -77,14 +78,11 @@ namespace MetriqusSdk
                     }
                 }
 
-                if (Metriqus.LogLevel != LogLevel.NoLog)
-                    Metriqus.DebugLog("Parsing Event Queue success");
-
                 return queue;
             }
-            catch
+            catch (Exception e)
             {
-                Metriqus.DebugLog("Parsing Event Queue failed", UnityEngine.LogType.Error);
+                Metriqus.DebugLog("Parsing Event Queue failed: " + e.Message, UnityEngine.LogType.Error);
                 return new();
             }
         }

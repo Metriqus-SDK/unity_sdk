@@ -105,7 +105,7 @@ namespace MetriqusSdk
             }
             catch (Exception e)
             {
-                Metriqus.DebugLog("TypedParameter Deserialize Error:\n" + e.ToString() + ",\njson: " + jsonNode, UnityEngine.LogType.Error);
+                Metriqus.DebugLog("TypedParameter Deserialize Error:\n" + e.Message + ",\njson: " + jsonNode, UnityEngine.LogType.Error);
                 return null;
             }
 
@@ -134,7 +134,7 @@ namespace MetriqusSdk
             }
             catch (Exception e)
             {
-                Metriqus.DebugLog("TypedParameter Deserialize Error:\n" + e.ToString() + ",\njson: " + jsonNode, UnityEngine.LogType.Error);
+                Metriqus.DebugLog("TypedParameter Deserialize Error:\n" + e.Message + ",\njson: " + jsonNode, UnityEngine.LogType.Error);
                 return null;
             }
 
