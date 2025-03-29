@@ -22,12 +22,12 @@ namespace MetriqusSdk
         /// <summary>
         /// The organization ID associated with the attribution data.
         /// </summary>
-        public long OrgId { get; set; }
+        public long? OrgId { get; set; }
 
         /// <summary>
         /// The campaign ID associated with the attribution data.
         /// </summary>
-        public long CampaignId { get; set; }
+        public long? CampaignId { get; set; }
 
         /// <summary>
         /// The type of conversion recorded (e.g., install, purchase).
@@ -47,7 +47,7 @@ namespace MetriqusSdk
         /// <summary>
         /// The ad group ID associated with the attribution.
         /// </summary>
-        public long AdGroupId { get; set; }
+        public long? AdGroupId { get; set; }
 
         /// <summary>
         /// The country or region where the ad was viewed or interacted with.
@@ -57,12 +57,12 @@ namespace MetriqusSdk
         /// <summary>
         /// The keyword ID used in the attribution data.
         /// </summary>
-        public long KeywordId { get; set; }
+        public long? KeywordId { get; set; }
 
         /// <summary>
         /// The specific ad ID that contributed to the attribution.
         /// </summary>
-        public long AdId { get; set; }
+        public long? AdId { get; set; }
 
         /// <summary>
         /// Parses a JSON string into a <see cref="MetriqusAttribution"/> object.
@@ -81,16 +81,27 @@ namespace MetriqusSdk
             MetriqusAttribution mAttribution = new();
 
             mAttribution.Raw = attributionJsonString.Replace('"', ' ');
-            try { mAttribution.Attribution = bool.Parse(MetriqusJSON.GetJsonString(jsonNode, "attribution")); } catch (Exception) { }
-            try { mAttribution.OrgId = long.Parse(MetriqusJSON.GetJsonString(jsonNode, "orgId")); } catch (Exception) { }
-            try { mAttribution.CampaignId = long.Parse(MetriqusJSON.GetJsonString(jsonNode, "campaignId")); } catch (Exception) { }
-            try { mAttribution.ConversionType = MetriqusJSON.GetJsonString(jsonNode, "conversionType"); } catch (Exception) { }
-            try { mAttribution.ClickDate = MetriqusJSON.GetJsonString(jsonNode, "clickDate"); } catch (Exception) { }
-            try { mAttribution.ClaimType = MetriqusJSON.GetJsonString(jsonNode, "claimType"); } catch (Exception) { }
-            try { mAttribution.AdGroupId = long.Parse(MetriqusJSON.GetJsonString(jsonNode, "adGroupId")); } catch (Exception) { }
-            try { mAttribution.CountryOrRegion = MetriqusJSON.GetJsonString(jsonNode, "countryOrRegion"); } catch (Exception) { }
-            try { mAttribution.KeywordId = long.Parse(MetriqusJSON.GetJsonString(jsonNode, "keywordId")); } catch (Exception) { }
-            try { mAttribution.AdId = long.Parse(MetriqusJSON.GetJsonString(jsonNode, "adId")); } catch (Exception) { }
+
+            try { mAttribution.Attribution = bool.TryParse(MetriqusJSON.GetJsonString(jsonNode, "attribution"), out var val) ? val : false; } catch { mAttribution.Attribution = false; }
+
+            try { mAttribution.OrgId = long.TryParse(MetriqusJSON.GetJsonString(jsonNode, "orgId"), out var val) ? val : null; } catch { mAttribution.OrgId = null; }
+
+            try { mAttribution.CampaignId = long.TryParse(MetriqusJSON.GetJsonString(jsonNode, "campaignId"), out var val) ? val : null; } catch { mAttribution.CampaignId = null; }
+
+            try { mAttribution.ConversionType = MetriqusJSON.GetJsonString(jsonNode, "conversionType"); } catch { mAttribution.ConversionType = null; }
+
+            try { mAttribution.ClickDate = MetriqusJSON.GetJsonString(jsonNode, "clickDate"); } catch { mAttribution.ClickDate = null; }
+
+            try { mAttribution.ClaimType = MetriqusJSON.GetJsonString(jsonNode, "claimType"); } catch { mAttribution.ClaimType = null; }
+
+            try { mAttribution.AdGroupId = long.TryParse(MetriqusJSON.GetJsonString(jsonNode, "adGroupId"), out var val) ? val : null; } catch { mAttribution.AdGroupId = null; }
+
+            try { mAttribution.CountryOrRegion = MetriqusJSON.GetJsonString(jsonNode, "countryOrRegion"); } catch { mAttribution.CountryOrRegion = null; }
+
+            try { mAttribution.KeywordId = long.TryParse(MetriqusJSON.GetJsonString(jsonNode, "keywordId"), out var val) ? val : null; } catch { mAttribution.KeywordId = null; }
+
+            try { mAttribution.AdId = long.TryParse(MetriqusJSON.GetJsonString(jsonNode, "adId"), out var val) ? val : null; } catch { mAttribution.AdId = null; }
+
 
             return mAttribution;
         }

@@ -291,6 +291,15 @@ namespace MetriqusSdk
 #endif
         }
 
+#if UNITY_IOS
+        public static void UpdateiOSConversionValue(int conversionValue)
+        {
+            if(IsInitialized())
+                native.UpdateIOSConversionValue(conversionValue);
+        }
+#endif
+
+
         /// <summary>
         /// Sets a user attribute spesific to user.
         /// </summary>
@@ -323,6 +332,7 @@ namespace MetriqusSdk
 
             return null;
         }
+
 
         public static void RemoveUserAttribute(string key)
         {

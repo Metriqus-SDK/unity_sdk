@@ -1,6 +1,5 @@
 using AOT;
 using System;
-using System.Globalization;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -17,6 +16,9 @@ namespace MetriqusSdk.iOS
 
         [DllImport("__Internal")]
         private static extern void metriqusRequestTrackingPermission(Action<string> callback);
+
+        [DllImport("__Internal")]
+        private static extern void metriqusRegisterDevelopmentImpression();
 
         [DllImport("__Internal")]
         private static extern void metriqusReportAdNetworkAttribution(Action<string> callback);
@@ -129,7 +131,7 @@ namespace MetriqusSdk.iOS
             ReportAdNetworkAttributionCallback?.Invoke(message);
         }
 
-        internal override void UpdateConversionValue(int value)
+        internal override void UpdateIOSConversionValue(int value)
         {
             UpdateConversionValueCallback = (message) =>
             {

@@ -45,6 +45,8 @@ namespace MetriqusSdk
             // Add Ad network keys
             AddNetworkKeys(plist);
 
+            AddAdvertisingAttributionReportEndpoint(plist);
+
             // Write the changes back to the plist file
             plist.WriteToFile(plistPath);
             
@@ -62,15 +64,21 @@ namespace MetriqusSdk
 
         private static void AddTrackingUsageDescription(PlistDocument plist)
         {
-            // Ensure NSUserTrackingUsageDescription is set
+            // Ensure NSUserTrackingUsageDescription is set or updated
             const string trackingDescriptionKey = "NSUserTrackingUsageDescription";
-            if (!plist.root.values.ContainsKey(trackingDescriptionKey))
-            {
-                plist.root.SetString(trackingDescriptionKey,
-                    string.IsNullOrEmpty(MetriqusSettings.Instance.iOSUserTrackingUsageDescription) ?
-                    "We use your data to show personalized ads."
-                    : MetriqusSettings.Instance.iOSUserTrackingUsageDescription);
-            }
+
+            string description = string.IsNullOrEmpty(MetriqusSettings.Instance.iOSUserTrackingUsageDescription)
+                ? "We use your data to show personalized ads."
+                : MetriqusSettings.Instance.iOSUserTrackingUsageDescription;
+
+            plist.root.SetString(trackingDescriptionKey, description);
+        }
+
+        private static void AddAdvertisingAttributionReportEndpoint(PlistDocument plist)
+        {
+            // Ensure NSUserTrackingUsageDescription is set
+            const string attributionReportEndpoint = "NSAdvertisingAttributionReportEndpoint";
+            plist.root.SetString(attributionReportEndpoint, "https://sdk.metriqus.com");
         }
 
         private static void AddNetworkKeys(PlistDocument plist)
@@ -84,11 +92,72 @@ namespace MetriqusSdk
 
             var skAdNetworkArray = plist.root[skAdNetworkItemsKey].AsArray();
 
-            AddAdNetworkKey(skAdNetworkArray, "ca-app-pub-3940256099942544/2934735716"); // Google AdMob
-            AddAdNetworkKey(skAdNetworkArray, "v6w7j5b7xr.skadnetwork"); // TikTok
-            AddAdNetworkKey(skAdNetworkArray, "fbadnetwork"); // Facebook
-            AddAdNetworkKey(skAdNetworkArray, "4fzdc2evr5.skadnetwork"); // Twitter
-            AddAdNetworkKey(skAdNetworkArray, "prcb7njmu6.skadnetwork"); // Unity Ads
+            // clear existing elements
+            skAdNetworkArray.values.Clear();
+
+            AddAdNetworkKey(skAdNetworkArray, "4fzdc2evr5.skadnetwork"); // Aarki
+            AddAdNetworkKey(skAdNetworkArray, "4pfyvq9l8r.skadnetwork"); // AdColony Inc.
+            AddAdNetworkKey(skAdNetworkArray, "ydx93a7ass.skadnetwork"); // Adikteev
+            AddAdNetworkKey(skAdNetworkArray, "tmhh9296z4.skadnetwork"); // Adkomo
+            AddAdNetworkKey(skAdNetworkArray, "488r3q3dtq.skadnetwork"); // Adtiming technology PTE. LTD.
+            AddAdNetworkKey(skAdNetworkArray, "nzq8sh4pbs.skadnetwork"); // Adzmedia
+            AddAdNetworkKey(skAdNetworkArray, "v72qych5uu.skadnetwork"); // Appier
+            AddAdNetworkKey(skAdNetworkArray, "6xzpu9s2p8.skadnetwork"); // Applift
+            AddAdNetworkKey(skAdNetworkArray, "ludvb6z3bs.skadnetwork"); // AppLovin
+            AddAdNetworkKey(skAdNetworkArray, "mlmmfzh3r3.skadnetwork"); // Appreciate
+            AddAdNetworkKey(skAdNetworkArray, "lr83yxwka7.skadnetwork"); // Apptimus LTD
+            AddAdNetworkKey(skAdNetworkArray, "cp8zw746q7.skadnetwork"); // Arpeely
+            AddAdNetworkKey(skAdNetworkArray, "c6k4g5qg8m.skadnetwork"); // Beeswax
+            AddAdNetworkKey(skAdNetworkArray, "wg4vff78zm.skadnetwork"); // Bidmachine
+            AddAdNetworkKey(skAdNetworkArray, "3sh42y64q3.skadnetwork"); // Centro
+            AddAdNetworkKey(skAdNetworkArray, "f38h382jlk.skadnetwork"); // Chartboost
+            AddAdNetworkKey(skAdNetworkArray, "hs6bdukanm.skadnetwork"); // Criteo
+            AddAdNetworkKey(skAdNetworkArray, "9rd848q2bz.skadnetwork"); // Criteo SA (Manage.com)
+            AddAdNetworkKey(skAdNetworkArray, "prcb7njmu6.skadnetwork"); // CrossInstall
+            AddAdNetworkKey(skAdNetworkArray, "52fl2v3hgk.skadnetwork"); // Curate
+            AddAdNetworkKey(skAdNetworkArray, "m8dbw4sv7c.skadnetwork"); // Dataseat
+            AddAdNetworkKey(skAdNetworkArray, "m5mvw97r93.skadnetwork"); // Discipline Digital
+            AddAdNetworkKey(skAdNetworkArray, "v9wttpbfk9.skadnetwork"); // Facebook Audience Network 1
+            AddAdNetworkKey(skAdNetworkArray, "n38lu8286q.skadnetwork"); // Facebook Audience Network 2
+            AddAdNetworkKey(skAdNetworkArray, "fz2k2k5tej.skadnetwork"); // FeedMob
+            AddAdNetworkKey(skAdNetworkArray, "g2y4y55b64.skadnetwork"); // GlobalWide Media Ltd
+            AddAdNetworkKey(skAdNetworkArray, "cstr6suwn9.skadnetwork"); // Google AdMob
+            AddAdNetworkKey(skAdNetworkArray, "w9q455wk68.skadnetwork"); // Hybrid
+            AddAdNetworkKey(skAdNetworkArray, "wzmmz9fp6w.skadnetwork"); // InMobi
+            AddAdNetworkKey(skAdNetworkArray, "su67r6k2v3.skadnetwork"); // ironSource from Unity
+            AddAdNetworkKey(skAdNetworkArray, "yclnxrl5pm.skadnetwork"); // Jampp
+            AddAdNetworkKey(skAdNetworkArray, "4468km3ulz.skadnetwork"); // Kayzen
+            AddAdNetworkKey(skAdNetworkArray, "v79kvwwj4g.skadnetwork"); // Kidoz Ltd.
+            AddAdNetworkKey(skAdNetworkArray, "t38b2kh725.skadnetwork"); // Lifestreet
+            AddAdNetworkKey(skAdNetworkArray, "7ug5zh24hu.skadnetwork"); // Liftoff
+            AddAdNetworkKey(skAdNetworkArray, "5lm9lj6jb7.skadnetwork"); // Loopme
+            AddAdNetworkKey(skAdNetworkArray, "zmvfpc5aq8.skadnetwork"); // Maiden Marketing Pvt Ltd.
+            AddAdNetworkKey(skAdNetworkArray, "kbd757ywx3.skadnetwork"); // Mintegral
+            AddAdNetworkKey(skAdNetworkArray, "ns5j362hk7.skadnetwork"); // Mobrand
+            AddAdNetworkKey(skAdNetworkArray, "275upjj5gd.skadnetwork"); // Mobupps
+            AddAdNetworkKey(skAdNetworkArray, "9t245vhmpl.skadnetwork"); // Moloco
+            AddAdNetworkKey(skAdNetworkArray, "cad8qz2s3j.skadnetwork"); // MYAPPFREE S.P.A.
+            AddAdNetworkKey(skAdNetworkArray, "a2p9lx4jpn.skadnetwork"); // Opera
+            AddAdNetworkKey(skAdNetworkArray, "238da6jt44.skadnetwork"); // Pangle/Bytedance-China
+            AddAdNetworkKey(skAdNetworkArray, "22mmun2rn5.skadnetwork"); // Pangle/Bytedance-Non china
+            AddAdNetworkKey(skAdNetworkArray, "44jx6755aq.skadnetwork"); // Persona.ly
+            AddAdNetworkKey(skAdNetworkArray, "tl55sbb4fm.skadnetwork"); // PubNative GMBH
+            AddAdNetworkKey(skAdNetworkArray, "24zw6aqk47.skadnetwork"); // Qverse
+            AddAdNetworkKey(skAdNetworkArray, "2u9pt9hc89.skadnetwork"); // Remerge
+            AddAdNetworkKey(skAdNetworkArray, "8s468mfl3y.skadnetwork"); // RTB House
+            AddAdNetworkKey(skAdNetworkArray, "glqzh8vgby.skadnetwork"); // Sabio Mobile Inc.
+            AddAdNetworkKey(skAdNetworkArray, "av6w8kgt66.skadnetwork"); // ScaleMonk
+            AddAdNetworkKey(skAdNetworkArray, "klf5c3l5u5.skadnetwork"); // Sift
+            AddAdNetworkKey(skAdNetworkArray, "ppxm28t8ap.skadnetwork"); // Smadex
+            AddAdNetworkKey(skAdNetworkArray, "424m5254lk.skadnetwork"); // Snap Inc.
+            AddAdNetworkKey(skAdNetworkArray, "44n7hlldy6.skadnetwork"); // Spyke Media
+            AddAdNetworkKey(skAdNetworkArray, "ecpz2srf59.skadnetwork"); // TapJoy
+            AddAdNetworkKey(skAdNetworkArray, "pwa73g5rt2.skadnetwork"); // Tremor
+            AddAdNetworkKey(skAdNetworkArray, "4dzt52r2t5.skadnetwork"); // Unity Technologies
+            AddAdNetworkKey(skAdNetworkArray, "bvpn9ufa9b.skadnetwork"); // Unity Technologies
+            AddAdNetworkKey(skAdNetworkArray, "gta9lk7p23.skadnetwork"); // Vungle
+            AddAdNetworkKey(skAdNetworkArray, "3rd42ekr43.skadnetwork"); // YouAppi
+
         }
 
         // Helper method to add a single ad network key if not already present

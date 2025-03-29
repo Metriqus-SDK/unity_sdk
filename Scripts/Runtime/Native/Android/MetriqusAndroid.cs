@@ -139,7 +139,7 @@ namespace MetriqusSdk.Android
 
             public void onError(string error)
             {
-                if (this.successCallback == null)
+                if (this.errorCallback == null)
                 {
                     return;
                 }

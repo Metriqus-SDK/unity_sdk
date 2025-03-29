@@ -3,234 +3,175 @@
 #import <AdSupport/AdSupport.h>
 #import <StoreKit/SKAdNetwork.h>
 #import <AdServices/AdServices.h>
+#import <StoreKit/StoreKit.h>
 
 @interface Metriqus:NSObject
-+ (void)reportAdNetworkAttribution: (void (^)(NSString *messsage))messageCallback;
-
-+ (void)updateConversionValue:(NSInteger)value
-              MessageCallback: (void (^)(NSString *messsage))messageCallback;
-
-+ (void)requestTrackingPermission: (void (^)(NSString *idfa))callback;
-
-+ (void)readAttributionToken:(void (^)(NSString *token))success
-                     Failure:(void (^)(NSString *errorMessage))failure;
++ (void)reportAdNetworkAttribution:(void (^)(NSString *message))messageCallback;
++ (void)updateConversionValue:(NSInteger)value MessageCallback:(void (^)(NSString *message))messageCallback;
++ (void)requestTrackingPermission:(void (^)(NSString *idfa))callback;
++ (void)readAttributionToken:(void (^)(NSString *token))success Failure:(void (^)(NSString *errorMessage))failure;
 @end
 
 @implementation Metriqus
-+ (void)reportAdNetworkAttribution: (void (^)(NSString *messsage))messageCallback {
-    if (@available(iOS 15.4, *)) {
-        [SKAdNetwork updatePostbackConversionValue:0
-                                 completionHandler:^(NSError * _Nullable error) {
-            if (error) {
-                if (messageCallback)
-                {
-                    messageCallback([NSString stringWithFormat:@"Error updating postback conversion value: %@ (Code: %ld, Domain: %@)",error.localizedDescription, (long)error.code, error.domain]);
-                }
 
-                // Handle specific error codes if needed
-                if ([error.domain isEqualToString:@"SKANErrorDomain"]) {
-                    switch (error.code) {
-                        case 10: // Example: Invalid state
-                            if (messageCallback)
-                            {
-                                messageCallback(@"Error: Conversion value cannot be updated in the current state.");
-                            }
-                            break;
-                        default:
-                            if (messageCallback)
-                            {
-                                messageCallback([NSString stringWithFormat:@"Unhandled SKANErrorDomain code: %ld", (long)error.code]);
-                            }
-                            break;
-                    }
-                }
-            } else {
-                if (messageCallback)
-                {
-                    messageCallback(@"Postback conversion value updated successfully.");
-                }
-            }
+void handleSKAdNetworkCompletion(NSError * _Nullable error, void (^messageCallback)(NSString *)) {
+    if (error) {
+        NSLog(@"[Metriqus] SKAdNetwork completion failed: %@ (Code: %ld, Domain: %@)", error.localizedDescription, (long)error.code, error.domain);
+        
+        if (messageCallback) {
+            messageCallback([NSString stringWithFormat:@"Error updating postback conversion value: %@ (Code: %ld, Domain: %@)", error.localizedDescription, (long)error.code, error.domain]);
+        }
+    } else {
+        NSLog(@"[Metriqus] Postback conversion value updated successfully.");
+        if (messageCallback) {
+            messageCallback(@"Postback conversion value updated successfully.");
+        }
+    }
+}
+
++ (void)reportAdNetworkAttribution:(void (^)(NSString *message))messageCallback {
+    NSLog(@"[Metriqus] Reporting ad network attribution...");
+
+    if (@available(iOS 15.4, *)) {
+        NSLog(@"[Metriqus] Using updatePostbackConversionValue.");
+        [SKAdNetwork updatePostbackConversionValue:0 completionHandler:^(NSError * _Nullable error) {
+            handleSKAdNetworkCompletion(error, messageCallback);
         }];
+    } else if (@available(iOS 14.0, *)) {
+        NSLog(@"[Metriqus] Using deprecated updateConversionValue.");
+        [SKAdNetwork updateConversionValue:0];
+        if (messageCallback) {
+            messageCallback(@"Fallback to updateConversionValue for older iOS versions (14.0 - 15.4).");
+        }
     } else if (@available(iOS 11.3, *)) {
+        NSLog(@"[Metriqus] Using registerAppForAdNetworkAttribution.");
         [SKAdNetwork registerAppForAdNetworkAttribution];
-        if (messageCallback)
-        {
+        if (messageCallback) {
             messageCallback(@"Fallback to registerAppForAdNetworkAttribution for older iOS versions (11.3 - 15.3).");
         }
     } else {
-        if (messageCallback)
-        {
+        NSLog(@"[Metriqus] SKAdNetwork not supported on this iOS version.");
+        if (messageCallback) {
             messageCallback(@"SKAdNetwork is not supported on iOS versions below 11.3.");
         }
     }
 }
 
-+ (void)updateConversionValue: (NSInteger)value
-             MessageCallback : (void (^)(NSString *messsage))messageCallback {
-                
++ (void)updateConversionValue:(NSInteger)value MessageCallback:(void (^)(NSString *message))messageCallback {
+    NSLog(@"[Metriqus] Updating conversion value: %ld", (long)value);
+
     if (@available(iOS 15.4, *)) {
-        [SKAdNetwork updatePostbackConversionValue:value
-                                  completionHandler:^(NSError * _Nullable error) {
-            if (error) {
-                if (messageCallback)
-                {
-                    messageCallback([NSString stringWithFormat:@"Error updating postback conversion value: %@ (Code: %ld, Domain: %@)",
-                                     error.localizedDescription, (long)error.code, error.domain]);
-                }
-                // Handle specific error codes for better debugging
-                if ([error.domain isEqualToString:@"SKANErrorDomain"]) {
-                    switch (error.code) {
-                        case 10:
-                            if (messageCallback)
-                            {
-                                messageCallback(@"Error: Conversion value cannot be updated in the current state.");
-                            }
-                            break;
-                        default:
-                            if (messageCallback)
-                            {
-                                messageCallback([NSString stringWithFormat:@"Unhandled SKANErrorDomain code: %ld", (long)error.code]);
-                            }
-                            break;
-                    }
-                }
-            } else {
-                if (messageCallback)
-                {
-                    messageCallback([NSString stringWithFormat:@"Postback conversion value updated successfully: %ld", (long)value]);
-                }
-            }
+        NSLog(@"[Metriqus] Using updatePostbackConversionValue.");
+        [SKAdNetwork updatePostbackConversionValue:0 completionHandler:^(NSError * _Nullable error) {
+            handleSKAdNetworkCompletion(error, messageCallback);
         }];
     } else if (@available(iOS 14.0, *)) {
-        // Use the older API for iOS 14.0 to 15.3
-        [SKAdNetwork updateConversionValue:value];
-        if (messageCallback)
-        {
-            messageCallback([NSString stringWithFormat:@"Updated conversion value using the deprecated method: %ld", (long)value]);
+        NSLog(@"[Metriqus] Using deprecated updateConversionValue.");
+        [SKAdNetwork updateConversionValue:0];
+        if (messageCallback) {
+            messageCallback(@"Fallback to updateConversionValue for older iOS versions (14.0 - 15.4).");
         }
     } else {
-        if (messageCallback)
-        {
-            messageCallback(@"SKAdNetwork is not supported on iOS versions below 14.0.");
+        NSLog(@"[Metriqus] SKAdNetwork not supported on this iOS version.");
+        if (messageCallback) {
+            messageCallback(@"SKAdNetwork is not supported on iOS versions below 11.3.");
         }
     }
 }
 
-+ (void)requestTrackingPermission: (void (^)(NSString *idfa))callback {
++ (void)requestTrackingPermission:(void (^)(NSString *idfa))callback {
+    NSLog(@"[Metriqus] Requesting tracking permission...");
+
     if (@available(iOS 14, *)) {
         [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
+            NSLog(@"[Metriqus] Tracking authorization status: %ld", (long)status);
             switch (status) {
                 case ATTrackingManagerAuthorizationStatusAuthorized: {
-                    // Permission granted
                     NSUUID *idfa = [[ASIdentifierManager sharedManager] advertisingIdentifier];
                     if (idfa && ![idfa.UUIDString isEqualToString:@"00000000-0000-0000-0000-000000000000"]) {
                         callback(idfa.UUIDString);
                     } else {
-                        callback(@""); // Or handle the lack of an IDFA appropriately
+                        callback(@"");
                     }
                     break;
                 }
-                case ATTrackingManagerAuthorizationStatusDenied:
-                    callback(@"");
-                    break;
-                case ATTrackingManagerAuthorizationStatusRestricted:
-                    callback(@"");
-                    break;
-                case ATTrackingManagerAuthorizationStatusNotDetermined:
-                    callback(@"");
-                    break;
                 default:
                     callback(@"");
                     break;
             }
         }];
     } else {
-        // For iOS 13 and earlier
         NSUUID *idfa = [[ASIdentifierManager sharedManager] advertisingIdentifier];
-
-        if (idfa && ![idfa.UUIDString isEqualToString:@"00000000-0000-0000-0000-000000000000"])
-        {
+        if (idfa && ![idfa.UUIDString isEqualToString:@"00000000-0000-0000-0000-000000000000"]) {
             callback(idfa.UUIDString);
-        }
-        else
-        {
+        } else {
             callback(@"");
         }
     }
 }
 
-+ (void)readAttributionToken:(void (^)(NSString *token))success
-                     Failure:(void (^)(NSString *errorMessage))failure
-{
++ (void)readAttributionToken:(void (^)(NSString *token))success Failure:(void (^)(NSString *errorMessage))failure {
+    NSLog(@"[Metriqus] Reading attribution token...");
+
     if (@available(iOS 14.3, *)) {
         NSError *error = nil;
         NSString *token = [AAAttribution attributionTokenWithError:&error];
 
         if (error) {
-            if (failure) {
-                failure([NSString stringWithFormat:@"Failed to retrieve attribution token: %@", error.localizedDescription]);
-            }
+            NSLog(@"[Metriqus] Failed to retrieve attribution token: %@", error.localizedDescription);
+            if (failure) failure([NSString stringWithFormat:@"Failed to retrieve attribution token: %@", error.localizedDescription]);
         } else if (token) {
-            if (success) {
-                success(token);
-            }
+            NSLog(@"[Metriqus] Successfully retrieved attribution token.");
+            if (success) success(token);
         } else {
-            if (failure) {
-                failure(@"Attribution token is null.");
-            }
+            NSLog(@"[Metriqus] Attribution token is null.");
+            if (failure) failure(@"Attribution token is null.");
         }
     } else {
-        if (failure) {
-            failure(@"Attribution token requires iOS 14.3 or later.");
-        }
+        NSLog(@"[Metriqus] Attribution token requires iOS 14.3 or later.");
+        if (failure) failure(@"Attribution token requires iOS 14.3 or later.");
     }
 }
 
 @end
 
-extern "C" void metriqusReportAdNetworkAttribution(void (*callback)(const char *))
-{
-    return [Metriqus reportAdNetworkAttribution:^(NSString *message) {
+// C interface for Unity or other integrations
+extern "C" void metriqusReportAdNetworkAttribution(void (*callback)(const char *)) {
+    NSLog(@"[Metriqus] Calling metriqusReportAdNetworkAttribution.");
+    [Metriqus reportAdNetworkAttribution:^(NSString *message) {
         if (callback) {
-            const char *messageCStr = [message UTF8String];
-            callback(messageCStr);
+            callback([message UTF8String]);
         }
     }];
 }
 
-extern "C" void metriqusUpdateConversionValue(int value, void (*messageCallback)(const char *))
-{
-    return [Metriqus updateConversionValue:value
-           MessageCallback:^(NSString *message) {
-            if (message) {
-                const char *messageCStr = [message UTF8String];
-                messageCallback(messageCStr);
-            }
-        }];
-}
-
-extern "C" void metriqusRequestTrackingPermission(void (*callback)(const char *))
-{
-    return [Metriqus requestTrackingPermission:^(NSString *idfa) {
-        if (callback) {
-            const char *idfaCStr = [idfa UTF8String];
-            
-            callback(idfaCStr);
+extern "C" void metriqusUpdateConversionValue(int value, void (*messageCallback)(const char *)) {
+    NSLog(@"[Metriqus] Calling metriqusUpdateConversionValue.");
+    [Metriqus updateConversionValue:value MessageCallback:^(NSString *message) {
+        if (message) {
+            messageCallback([message UTF8String]);
         }
     }];
 }
 
-extern "C" void metriqusReadAttributionToken(void (*callback)(const char *), void (*failureCallback)(const char *))
-{
+extern "C" void metriqusRequestTrackingPermission(void (*callback)(const char *)) {
+    NSLog(@"[Metriqus] Calling metriqusRequestTrackingPermission.");
+    [Metriqus requestTrackingPermission:^(NSString *idfa) {
+        if (callback) {
+            callback([idfa UTF8String]);
+        }
+    }];
+}
+
+extern "C" void metriqusReadAttributionToken(void (*callback)(const char *), void (*failureCallback)(const char *)) {
+    NSLog(@"[Metriqus] Calling metriqusReadAttributionToken.");
     [Metriqus readAttributionToken:^(NSString *token) {
         if (callback) {
-            const char *tokenCStr = [token UTF8String];
-            callback(tokenCStr);
+            callback([token UTF8String]);
         }
     } Failure:^(NSString *error) {
         if (failureCallback) {
-            const char *errorCStr = [error UTF8String];
-            failureCallback(errorCStr);
+            failureCallback([error UTF8String]);
         }
     }];
 }

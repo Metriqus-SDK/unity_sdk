@@ -2,7 +2,6 @@ using MetriqusSdk.Storage;
 using MetriqusSdk.Web;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -144,7 +143,7 @@ namespace MetriqusSdk
             packageSender.SendSessionBeatPackage();
         }
 
-        internal virtual void UpdateConversionValue(int value)
+        internal virtual void UpdateIOSConversionValue(int value)
         {
 
         }
@@ -260,7 +259,7 @@ namespace MetriqusSdk
                         },
                         (error) =>
                         {
-                            Metriqus.DebugLog("Attribution read error: " + error, LogType.Warning);
+                            Metriqus.DebugLog("Attribution read error: " + error, LogType.Error);
                         });
                 }
 
