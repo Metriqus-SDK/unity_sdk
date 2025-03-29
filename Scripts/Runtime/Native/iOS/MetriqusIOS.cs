@@ -18,9 +18,6 @@ namespace MetriqusSdk.iOS
         private static extern void metriqusRequestTrackingPermission(Action<string> callback);
 
         [DllImport("__Internal")]
-        private static extern void metriqusRegisterDevelopmentImpression();
-
-        [DllImport("__Internal")]
         private static extern void metriqusReportAdNetworkAttribution(Action<string> callback);
 
         [DllImport("__Internal")]
