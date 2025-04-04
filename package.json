@@ -1,6 +1,6 @@
 {
   "name": "com.metriqus.unity-sdk",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "displayName": "Metriqus Unity SDK",
   "description": "Metriqus SDK for Unity",
   "unity": "2022.3",
