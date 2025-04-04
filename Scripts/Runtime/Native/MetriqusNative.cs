@@ -35,7 +35,8 @@ namespace MetriqusSdk
         private string sessionId;
         protected string adId = null;
 
-        protected Action onFirstLaunch;
+        protected delegate void OnFirstLaunch();
+        protected event OnFirstLaunch onFirstLaunch;
 
         public bool IsTrackingEnabled => isTrackingEnabled;
         public bool IsFirstLaunch => isFirstLaunch;
@@ -165,10 +166,10 @@ namespace MetriqusSdk
 
         private void ProcessSession()
         {
+            DateTime currentTime = DateTime.UtcNow;
+
             try
             {
-                DateTime currentTime = DateTime.UtcNow;
-
                 // check is this first session by checking lastSessionStartTimeKey exist
                 bool isLastSessionStartTimeSaved = storage.CheckKeyExist(LastSessionStartTimeKey);
 
@@ -214,13 +215,13 @@ namespace MetriqusSdk
 
                     packageSender.SendSessionStartPackage();
                 }
-
-                storage.SaveData(LastSessionStartTimeKey, MetriqusUtils.ConvertDateToString(currentTime));
             }
             catch (Exception e)
             {
                 Metriqus.DebugLog("An error occured ProcessSession: " + e.Message, LogType.Error);
             }
+
+            storage.SaveData(LastSessionStartTimeKey, MetriqusUtils.ConvertDateToString(currentTime));
         }
 
         private void ProcessAttribution()

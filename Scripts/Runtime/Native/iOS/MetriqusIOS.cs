@@ -109,8 +109,7 @@ namespace MetriqusSdk.iOS
 
         private void ReportAdNetworkAttribution()
         {
-            if (Metriqus.LogLevel != LogLevel.NoLog)
-                Metriqus.DebugLog("ReportAdNetworkAttribution");
+            Metriqus.DebugLog("ReportAdNetworkAttribution");
 
             ReportAdNetworkAttributionCallback = (message) =>
             {

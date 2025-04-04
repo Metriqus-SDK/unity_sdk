@@ -3,7 +3,7 @@
     internal sealed class MetriqusRemoteSettings
     {
         public int MaxEventBatchCount = 10;
-        public int MaxEventStoreSeconds = 30 * 60;// 30 minutes //86400; // a day
+        public int MaxEventStoreSeconds = 2 * 60;// 2 minutes
 
         public int SendEventIntervalSeconds = 2;
 
