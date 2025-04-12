@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace MetriqusSdk
 {
@@ -108,6 +109,11 @@ namespace MetriqusSdk
             }
 
             return sanitizedParameters;
+        }
+
+        public static DateTime GetUtcStartTime()
+        {
+            return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         }
 
         public static string ConvertDateToString(DateTime date)

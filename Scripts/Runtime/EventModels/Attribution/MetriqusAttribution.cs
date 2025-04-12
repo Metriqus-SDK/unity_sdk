@@ -169,6 +169,8 @@ namespace MetriqusSdk
             {
                 return;
             }
+            
+            if (string.IsNullOrEmpty(referrerUrl)) return;
 
             this.Raw = referrerUrl.Replace('"', ' ');
 

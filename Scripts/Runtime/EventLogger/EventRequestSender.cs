@@ -1,6 +1,7 @@
 using MetriqusSdk.Web;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -28,7 +29,7 @@ namespace MetriqusSdk
                 }
                 else
                 {
-                    string timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
+                    string timestamp = MetriqusJSON.SerializeValue(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
                     string encryptedBody = Encrypt(eventsJson, metriqusSettings.ClientSecret, metriqusSettings.ClientKey);
 

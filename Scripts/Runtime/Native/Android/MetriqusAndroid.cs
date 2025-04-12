@@ -26,6 +26,11 @@ namespace MetriqusSdk.Android
             });
         }
 
+        protected override void OnFirstLaunch()
+        {
+
+        }
+
         internal override void ReadAdid(Action<string> callback)
         {
             try
@@ -129,11 +134,22 @@ namespace MetriqusSdk.Android
                     return;
                 }
 
-                Metriqus.EnqueueCallback(() =>
+                Metriqus.EnqueueCallback(async () =>
                 {
                     MetriqusAttribution attribution = new MetriqusAttribution(referrerUrl);
 
-                    this.successCallback(attribution);
+                    if (MetaAttributionUtilities.IsMetaUtm(attribution.Source))
+                    {
+                        var decryptedReferrerUrl = await MetaAttributionUtilities.DecryptMetaUtm(attribution.Content);
+
+                        MetriqusAttribution metaAttribution = new MetriqusAttribution(decryptedReferrerUrl);
+
+                        this.successCallback(attribution);
+                    }
+                    else
+                    {
+                        this.successCallback(attribution);
+                    }
                 });
             }
 

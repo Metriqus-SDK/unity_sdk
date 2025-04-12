@@ -35,9 +35,6 @@ namespace MetriqusSdk
         private string sessionId;
         protected string adId = null;
 
-        protected delegate void OnFirstLaunch();
-        protected event OnFirstLaunch onFirstLaunch;
-
         public bool IsTrackingEnabled => isTrackingEnabled;
         public bool IsFirstLaunch => isFirstLaunch;
         public bool IsInitialized => isInitialized;
@@ -75,6 +72,14 @@ namespace MetriqusSdk
             }
             catch (Exception e)
             {
+                if (storage == null)
+                {
+                    storage = new Storage.Storage(new EncryptedStorageHandler());
+                    MetriqusLogger.Init(storage);
+                }
+
+                isInitialized = false;
+
                 Metriqus.OnSdkInitialize?.Invoke(false);
 
                 Metriqus.DebugLog("Error while initializing Native: " + e.Message, LogType.Error);
@@ -143,11 +148,13 @@ namespace MetriqusSdk
         {
             packageSender.SendSessionBeatPackage();
         }
+#if UNITY_IOS
 
         internal virtual void UpdateIOSConversionValue(int value)
         {
 
         }
+#endif
 
         internal void OnPause()
         {
@@ -315,7 +322,7 @@ namespace MetriqusSdk
 
                     storage.SaveData(FirstLaunchTimeKey, MetriqusUtils.ConvertDateToString(DateTime.UtcNow));
 
-                    onFirstLaunch?.Invoke();
+                    OnFirstLaunch();
                 }
             }
             catch (Exception e)
@@ -323,6 +330,8 @@ namespace MetriqusSdk
                 Metriqus.DebugLog("An error occured on ProcessIsFirstLaunch: " + e.Message, LogType.Error);
             }
         }
+
+        protected abstract void OnFirstLaunch();
 
         internal DateTime GetFirstLaunchTime()
         {
@@ -352,7 +361,7 @@ namespace MetriqusSdk
         {
             IPGeolocation.Geolocation info = null;
 
-            DateTime geolocationLastFetchedTime = DateTime.MinValue;
+            DateTime geolocationLastFetchedTime = MetriqusUtils.GetUtcStartTime();
 
             // Check if geolocation fetched before
             bool GeolocationLastFetchedTimeKeyExist = storage.CheckKeyExist(GeolocationLastFetchedTimeKey);
@@ -462,7 +471,7 @@ namespace MetriqusSdk
                 else
                 {
                     remoteSettings = new MetriqusRemoteSettings();
-                    Metriqus.DebugLog($"Remote Settings couldn't fetched or couldn't loaded from storage, using default", LogType.Warning);
+                    Metriqus.DebugLog($"Remote Settings couldn't fetched or couldn't loaded from storage, using default", LogType.Error);
                 }
             }
 

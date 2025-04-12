@@ -254,12 +254,18 @@ namespace MetriqusSdk
 
         public static void AddString(List<DynamicParameter> parameters, string key, string value)
         {
-            if (string.IsNullOrEmpty(value))
+            try
             {
-                return;
-            }
+                if (string.IsNullOrEmpty(value))
+                {
+                    return;
+                }
 
-            parameters.Add(new DynamicParameter(key, value));
+                parameters.Add(new DynamicParameter(key, value));
+            }
+            catch(Exception e) {
+                Metriqus.DebugLog($"PackageBuilder AddString Error: {e.Message}");
+            }
         }
 
         public static void AddBoolean(List<DynamicParameter> parameters, string key, bool? value)

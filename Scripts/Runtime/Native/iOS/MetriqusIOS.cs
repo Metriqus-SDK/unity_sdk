@@ -29,8 +29,6 @@ namespace MetriqusSdk.iOS
         internal override void InitSdk(MetriqusSettings metriqusSettings)
         {
             this.metriqusSettings = metriqusSettings;
-            onFirstLaunch += SetInstallTime;
-            onFirstLaunch += ReportAdNetworkAttribution;
 
             try
             {
@@ -66,6 +64,12 @@ namespace MetriqusSdk.iOS
             {
                 Metriqus.DebugLog(e.ToString(), LogType.Error);
             }
+        }
+
+        protected override void OnFirstLaunch()
+        {
+            ReportAdNetworkAttribution();
+            SetInstallTime();
         }
 
         internal override void ReadAdid(Action<string> callback)
@@ -109,11 +113,11 @@ namespace MetriqusSdk.iOS
 
         private void ReportAdNetworkAttribution()
         {
-            Metriqus.DebugLog("ReportAdNetworkAttribution");
+            Metriqus.DebugLog("[TEST LOG] ReportAdNetworkAttribution", LogType.Error);
 
             ReportAdNetworkAttributionCallback = (message) =>
             {
-                Metriqus.DebugLog(message);
+                Metriqus.DebugLog("[TEST LOG] " + message, LogType.Error);
             };
 
             metriqusReportAdNetworkAttribution(StaticReportAdNetworkAttributionCallback);

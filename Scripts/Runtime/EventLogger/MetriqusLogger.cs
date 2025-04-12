@@ -5,10 +5,11 @@ namespace MetriqusSdk
 {
     internal static class MetriqusLogger
     {
-        private static IEventQueueController eventQueue;
+        private static IEventQueueController eventQueue = null;
         public static void Init(IStorage storage)
         {
-            eventQueue = new EventQueueController(storage);
+            if (eventQueue == null)
+                eventQueue = new EventQueueController(storage);
         }
 
         public static void LogEvent(string name, string parameterName, string parameterValue)
