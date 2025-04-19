@@ -78,7 +78,7 @@ namespace MetriqusSdk
         {
             // Ensure NSUserTrackingUsageDescription is set
             const string attributionReportEndpoint = "NSAdvertisingAttributionReportEndpoint";
-            plist.root.SetString(attributionReportEndpoint, "https://sdk.metriqus.com");
+            plist.root.SetString(attributionReportEndpoint, "https://mtrqs.com");
         }
 
         private static void AddNetworkKeys(PlistDocument plist)

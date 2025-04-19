@@ -113,11 +113,11 @@ namespace MetriqusSdk.iOS
 
         private void ReportAdNetworkAttribution()
         {
-            Metriqus.DebugLog("[TEST LOG] ReportAdNetworkAttribution", LogType.Error);
+            Metriqus.DebugLog("ReportAdNetworkAttribution");
 
             ReportAdNetworkAttributionCallback = (message) =>
             {
-                Metriqus.DebugLog("[TEST LOG] " + message, LogType.Error);
+                Metriqus.DebugLog(message);
             };
 
             metriqusReportAdNetworkAttribution(StaticReportAdNetworkAttributionCallback);
