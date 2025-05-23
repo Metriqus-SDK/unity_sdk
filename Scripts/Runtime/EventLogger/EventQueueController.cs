@@ -16,6 +16,7 @@ namespace MetriqusSdk
         private const string EventsToSendKey = "metriqus_events_to_send";
 
         private IStorage storage;
+        private bool isFlushing = false;
 
         private Queue<EventQueue> eventsToSend = new();
 
@@ -119,7 +120,8 @@ namespace MetriqusSdk
 
                     eventQueue = new(); // create new queue and old one stored in events to send
 
-                    ProcessEvents();
+                    if (!isFlushing)
+                        ProcessEvents();
                 }
             }
             catch (Exception e)
@@ -135,10 +137,14 @@ namespace MetriqusSdk
         {
             if (eventsToSend.Count < 1) return;
 
+            if (isFlushing) return;
+
             //Metriqus.DebugLog("ProcessEvents, count: " + eventsToSend.Count);
 
             try
             {
+                isFlushing = true;
+
                 // queue is ready to send
                 // flust with back off 3 times
                 _ = await Backoff.DoAsync(
@@ -147,6 +153,8 @@ namespace MetriqusSdk
                     validateResult: result => result == true,
                     onComplete: (result, successful) =>
                     {
+                        this.isFlushing = false;
+
                         if (!successful)
                         {
                         }
