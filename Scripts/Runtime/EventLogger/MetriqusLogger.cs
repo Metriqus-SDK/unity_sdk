@@ -52,9 +52,9 @@ namespace MetriqusSdk
             eventQueue.AddEvent(new Event(name, parameters));
         }
 
-        public static void LogEvent(Package package)
+        public static void LogEvent(Package package, bool sendImmediately = false)
         {
-            eventQueue.AddEvent(new Event(package));
+            eventQueue.AddEvent(new Event(package), sendImmediately);
         }
     }
 }

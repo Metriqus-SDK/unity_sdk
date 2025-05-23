@@ -4,6 +4,7 @@ using System.Collections.Generic;
 #endif
 using System;
 using UnityEngine;
+using System.Linq;
 
 namespace MetriqusSdk
 {
@@ -195,6 +196,11 @@ namespace MetriqusSdk
                     this.Params = new();
 
                 this.Params.Add(new TypedParameter(item.Key, item.Value));
+            }
+
+            if (string.IsNullOrEmpty(this.Source) && this.Params.Any(s => s.Name == "gclid"))
+            {
+                this.Source = "googleads";
             }
         }
 #endif

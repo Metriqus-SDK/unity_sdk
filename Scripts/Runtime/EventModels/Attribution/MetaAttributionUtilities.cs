@@ -56,8 +56,8 @@ namespace MetriqusSdk
             {
                 data = data.Value,
                 nonce = nonce.Value,
-                bundle = "com.tiamogames.mergegame",
-                uid = "B96ACF896222B65F",
+                bundle = Application.identifier,
+                uid = Metriqus.GetUniqueUserId()
             };
 
             var response = await RequestSender.PostAsync(MetaUtmDecryptionUrl, JsonUtility.ToJson(req), headers);

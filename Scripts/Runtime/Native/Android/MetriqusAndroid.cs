@@ -144,7 +144,7 @@ namespace MetriqusSdk.Android
 
                         MetriqusAttribution metaAttribution = new MetriqusAttribution(decryptedReferrerUrl);
 
-                        this.successCallback(attribution);
+                        this.successCallback(metaAttribution);
                     }
                     else
                     {

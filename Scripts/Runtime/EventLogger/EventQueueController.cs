@@ -55,7 +55,7 @@ namespace MetriqusSdk
         /// Add event to queue
         /// </summary>
         /// <param name="_event"></param>
-        public void AddEvent(Event _event)
+        public void AddEvent(Event _event, bool sendImmediately = false)
         {
             if (eventQueue == null)
             {
@@ -71,13 +71,13 @@ namespace MetriqusSdk
             // save new json to local
             storage.SaveData(CurrentEventsKey, json);
 
-            CheckQueueStatus();
+            CheckQueueStatus(sendImmediately);
         }
 
         /// <summary>
         /// Check is event queue ready to send server
         /// </summary>
-        private void CheckQueueStatus()
+        private void CheckQueueStatus(bool sendImmediately)
         {
             try
             {
@@ -93,10 +93,17 @@ namespace MetriqusSdk
 
                 var remoteSettings = Metriqus.GetMetriqusRemoteSettings();
 
-                if (eventQueue.Events.Count >= remoteSettings.MaxEventBatchCount
-                    || (currentTime.Subtract(lastFlushTime).TotalSeconds) > (remoteSettings.MaxEventStoreSeconds))
+                if ((eventQueue.Events.Count >= remoteSettings.MaxEventBatchCount) || 
+                    (currentTime.Subtract(lastFlushTime).TotalSeconds > remoteSettings.MaxEventStoreSeconds) || sendImmediately)
                 {
-                    Metriqus.DebugLog("Checked sending events. EventQueue count : " + eventQueue.Events.Count + ", passedSeconds: " + (currentTime.Subtract(lastFlushTime).TotalSeconds));
+                    if (sendImmediately)
+                    {
+                        Metriqus.DebugLog("Sending events IMMEDIATELY. EventQueue count : " + eventQueue.Events.Count);
+                    }
+                    else
+                    {
+                        Metriqus.DebugLog("Sending events. EventQueue count : " + eventQueue.Events.Count + ", passedSeconds: " + (currentTime.Subtract(lastFlushTime).TotalSeconds));
+                    }
 
                     // save last event send time
                     storage.SaveData(LastFlushTimeKey, MetriqusUtils.ConvertDateToString(currentTime));
@@ -117,8 +124,7 @@ namespace MetriqusSdk
             }
             catch (Exception e)
             {
-                if (Metriqus.LogLevel != LogLevel.NoLog)
-                    Metriqus.DebugLog(e.ToString(), LogType.Error);
+                Metriqus.DebugLog(e.ToString(), LogType.Error);
             }
         }
 

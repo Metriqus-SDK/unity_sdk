@@ -65,7 +65,7 @@ namespace MetriqusSdk
             PackageBuilder builder = new PackageBuilder(Metriqus.GetMetriqusSettings(), Metriqus.GetDeviceInfo(), DateTime.UtcNow);
             Package package = builder.BuildAttributionPackage(attribution);
 
-            MetriqusLogger.LogEvent(package);
+            MetriqusLogger.LogEvent(package, sendImmediately: true);
 
             if (Metriqus.LogLevel == LogLevel.Verbose)
                 Metriqus.DebugLog("Sending attribution Package. \n" + package.ToString());
