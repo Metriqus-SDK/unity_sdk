@@ -139,6 +139,194 @@ The following functions allow you to track user events, ad revenue, and other an
 - Calls made outside these platforms will log an error message.
 - Ensure the SDK is initialized before calling tracking-related functions.
 
+## Usage Guide
+
+The `Metriqus` SDK provides a full suite of analytics tracking tools for Unity games. Below are the supported methods and how to use them in your project.
+
+### Initialization
+
+```csharp
+using MetriqusSdk;
+
+void Start()
+{
+    Metriqus.InitSdk(yourMetriqusSettingsScriptableObject);
+}
+```
+
+You can also let the SDK initialize automatically by unchecking **ManuelStart** in the `MetriqusSettings` asset.
+
+---
+
+### Event Tracking
+
+#### Track Custom Events
+
+```csharp
+Metriqus.TrackCustomEvent(new MetriqusCustomEvent("event_name");
+```
+
+#### Track In-App Purchases (IAP)
+
+```csharp
+Metriqus.TrackIAPEvent(new MetriqusInAppRevenue(...));
+```
+
+#### Track Performance (FPS)
+
+```csharp
+Metriqus.TrackPerformance(fps);
+```
+
+#### Track Item Usage
+
+```csharp
+Metriqus.TrackItemUsed(new MetriqusItemUsedEvent(...));
+```
+
+#### Track Level Start
+
+```csharp
+Metriqus.TrackLevelStarted(new MetriqusLevelStartedEvent(...));
+```
+
+#### Track Level Completion
+
+```csharp
+Metriqus.TrackLevelCompleted(new MetriqusLevelCompletedEvent(...));
+```
+
+#### Track Campaign Actions
+
+```csharp
+Metriqus.TrackCampaignAction(new MetriqusCampaignActionEvent(...));
+```
+
+#### Track Screen View
+
+```csharp
+Metriqus.TrackScreenView("MainMenu");
+```
+
+#### Track Button Click
+
+```csharp
+Metriqus.TrackButtonClick("PlayButton");
+```
+
+#### Track Ad Revenue (Generic, Applovin, Admob)
+
+```csharp
+Metriqus.TrackAdRevenue(new MetriqusAdRevenue(...));
+Metriqus.TrackApplovinAdRevenue(new MetriqusApplovinAdRevenue(...));
+Metriqus.TrackAdmobAdRevenue(new MetriqusAdmobAdRevenue(...));
+```
+
+---
+
+### User Attributes
+
+#### Set User Attribute
+
+```csharp
+Metriqus.SetUserAttribute(new TypedParameter("user_type", "premium"));
+```
+
+#### Get All User Attributes
+
+```csharp
+var attributes = Metriqus.GetUserAttributes();
+```
+
+#### Remove a User Attribute
+
+```csharp
+Metriqus.RemoveUserAttribute("user_type");
+```
+
+---
+
+### User & Session Info
+
+#### Get Advertising ID
+
+```csharp
+string adid = Metriqus.GetAdid();
+```
+
+#### Get Device Info
+
+```csharp
+var info = Metriqus.GetDeviceInfo();
+```
+
+#### Get Unique User ID
+
+```csharp
+string userId = Metriqus.GetUniqueUserId();
+```
+
+#### Get Session ID
+
+```csharp
+string sessionId = Metriqus.GetSessionId();
+```
+
+#### Get Geolocation
+
+```csharp
+var geo = Metriqus.GetGeolocation();
+```
+
+#### Check if First Launch
+
+```csharp
+bool isFirstLaunch = Metriqus.GetIsFirstLaunch();
+```
+
+#### Get First Touch Timestamp
+
+```csharp
+DateTime timestamp = Metriqus.GetUserFirstTouchTimestamp();
+```
+
+---
+
+### SDK Settings & Debugging
+
+#### Check Initialization
+
+```csharp
+bool isReady = Metriqus.IsInitialized();
+```
+
+#### Check Tracking Enabled
+
+```csharp
+bool isEnabled = Metriqus.IsTrackingEnabled();
+```
+
+#### Get Metriqus Settings
+
+```csharp
+var settings = Metriqus.GetMetriqusSettings();
+```
+
+#### Manual Debug Log
+
+```csharp
+Metriqus.DebugLog("Hello Metriqus!", LogType.Log);
+```
+
+#### iOS Conversion Value Update
+
+*(Only available on iOS builds)*
+
+```csharp
+Metriqus.UpdateiOSConversionValue(5);
+```
+
+---
 
 ## License
 
