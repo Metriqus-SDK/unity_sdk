@@ -184,8 +184,6 @@ Metriqus.TrackCustomEvent(new MetriqusCustomEvent(
 Metriqus.TrackIAPEvent(new MetriqusInAppRevenue(...));
 ```
 
-**No optional parameters** (parameters are passed via the `MetriqusInAppRevenue` object)
-
 #### Track Performance (FPS)
 
 ```csharp
@@ -204,75 +202,101 @@ Metriqus.TrackPerformance(fps, new List<TypedParameter> {
 #### Track Item Usage
 
 ```csharp
-Metriqus.TrackItemUsed(new MetriqusItemUsedEvent(...));
+Metriqus.TrackItemUsed(new MetriqusItemUsedEvent(){
+                ItemName = "best item",
+                Amount = 5,
+                ItemType = "fire",
+                ItemRarity = "epic",
+                ItemClass = "mage",
+                ItemCategory = "handheld",
+                Reason = "fusion"
+            });
 ```
 
 **With optional parameters inside the event object:**
 
 ```csharp
-Metriqus.TrackItemUsed(new MetriqusItemUsedEvent(
-    "currency",
-    10,
-    new List<TypedParameter> {
-        new TypedParameter("context", "upgrade"),
-        new TypedParameter("level", 3)
-    }
-));
+Metriqus.TrackItemUsed(new MetriqusItemUsedEvent(new() { new TypedParameter("item_x", 5) })
+            {
+                ItemName = "best item",
+                Amount = 5,
+                ItemType = "fire",
+                ItemRarity = "epic",
+                ItemClass = "mage",
+                ItemCategory = "handheld",
+                Reason = "fusion"
+            });
 ```
 
 #### Track Level Start
 
 ```csharp
-Metriqus.TrackLevelStarted(new MetriqusLevelStartedEvent(...));
+Metriqus.TrackLevelStarted(new MetriqusLevelStartedEvent(){
+                LevelNumber = 10,
+                LevelName = "Super Level",
+                Map = "map_3"
+            });
 ```
 
 **With optional parameters inside the event object:**
 
 ```csharp
-Metriqus.TrackLevelStarted(new MetriqusLevelStartedEvent(
-    "level_1",
-    new List<TypedParameter> {
-        new TypedParameter("difficulty", "hard"),
-        new TypedParameter("mode", "arcade")
-    }
-));
+Metriqus.TrackLevelStarted(new MetriqusLevelStartedEvent(new() { new TypedParameter("level_value", 10) })
+            {
+                LevelNumber = 10,
+                LevelName = "Super Level",
+                Map = "map_3"
+            });
 ```
 
 #### Track Level Completion
 
 ```csharp
-Metriqus.TrackLevelCompleted(new MetriqusLevelCompletedEvent(...));
+Metriqus.TrackLevelCompleted(new MetriqusLevelCompletedEvent(){
+                LevelNumber = 10,
+                LevelName = "Super Level",
+                Map = "map_3",
+                Duration = 98,
+                LevelProgress = 100,
+                LevelReward = 20,
+                LevelReward1 = 3,
+                LevelReward2 = 5,
+            });
 ```
 
 **With optional parameters inside the event object:**
 
 ```csharp
-Metriqus.TrackLevelCompleted(new MetriqusLevelCompletedEvent(
-    "level_1",
-    true,
-    new List<TypedParameter> {
-        new TypedParameter("time_taken", 83.5),
-        new TypedParameter("stars_earned", 3)
-    }
-));
+Metriqus.TrackLevelCompleted(new MetriqusLevelCompletedEvent(new() { new TypedParameter("level_comp_val", "1000") })
+            {
+                LevelNumber = 10,
+                LevelName = "Super Level",
+                Map = "map_3",
+                Duration = 98,
+                LevelProgress = 100,
+                LevelReward = 20,
+                LevelReward1 = 3,
+                LevelReward2 = 5,
+            });
 ```
 
 #### Track Campaign Actions
 
 ```csharp
-Metriqus.TrackCampaignAction(new MetriqusCampaignActionEvent(...));
+Metriqus.TrackCampaignAction(new MetriqusCampaignActionEvent(
+                campaignId: "campaign_1",
+                variantId: "variant_1",
+                action: MetriqusCampaignActionType.Click,
+                new() { new TypedParameter("campagn_val", "xyz") }));
 ```
 
 **With optional parameters inside the event object:**
 
 ```csharp
 Metriqus.TrackCampaignAction(new MetriqusCampaignActionEvent(
-    "campaign_abc",
-    "clicked",
-    new List<TypedParameter> {
-        new TypedParameter("placement", "home_screen")
-    }
-));
+                campaignId: "campaign_1",
+                variantId: "variant_1",
+                action: MetriqusCampaignActionType.Click));
 ```
 
 #### Track Screen View
@@ -312,8 +336,6 @@ Metriqus.TrackAdRevenue(new MetriqusAdRevenue(...));
 Metriqus.TrackApplovinAdRevenue(new MetriqusApplovinAdRevenue(...));
 Metriqus.TrackAdmobAdRevenue(new MetriqusAdmobAdRevenue(...));
 ```
-
-**No additional parameters required. These objects can hold optional properties internally.**
 
 ---
 
