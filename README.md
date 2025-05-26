@@ -335,17 +335,17 @@ Metriqus.TrackButtonClick("PlayButton", new List<TypedParameter> {
 var _adRevenueEvent = new MetriqusAdRevenue("test") { AdImpressionsCount = 1, AdRevenueNetwork = "test", AdRevenueUnit = "test", AdRevenuePlacement = "test" };
 _adRevenueEvent.SetRevenue(0.22, "EUR");
 
-Metriqus.TrackAdRevenue(new MetriqusAdRevenue(_event));
+Metriqus.TrackAdRevenue(_adRevenueEvent);
 
 var _applovinAdRevenueEvent = new MetriqusApplovinAdRevenue { AdImpressionsCount = 1, AdRevenueNetwork = "test", AdRevenueUnit = "test", AdRevenuePlacement = "test" };
 _applovinAdRevenueEvent.SetRevenue(0.22, "EUR");
 
-Metriqus.TrackApplovinAdRevenue(new MetriqusApplovinAdRevenue(_applovinAdRevenueEvent));
+Metriqus.TrackApplovinAdRevenue(_applovinAdRevenueEvent);
 
 var _admobAdRevenueEvent = new MetriqusAdmobAdRevenue { AdImpressionsCount = 1, AdRevenueNetwork = "test", AdRevenueUnit = "test", AdRevenuePlacement = "test" };
 _admobAdRevenueEvent.SetRevenue(0.22, "EUR");
 
-Metriqus.TrackAdmobAdRevenue(new MetriqusAdmobAdRevenue(_admobAdRevenueEvent));
+Metriqus.TrackAdmobAdRevenue(_admobAdRevenueEvent);
 ```
 
 ---
