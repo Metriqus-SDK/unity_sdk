@@ -166,18 +166,6 @@ You can also let the SDK initialize automatically by unchecking **ManuelStart** 
 Metriqus.TrackCustomEvent(new MetriqusCustomEvent("event_name"));
 ```
 
-**With optional parameters:**
-
-```csharp
-Metriqus.TrackCustomEvent(new MetriqusCustomEvent(
-    "event_name",
-    new List<TypedParameter> {
-        new TypedParameter("key1", "value1"),
-        new TypedParameter("key2", 123)
-    }
-));
-```
-
 ### Track In-App Purchases (IAP)
 
 ```csharp
@@ -190,34 +178,10 @@ Metriqus.TrackIAPEvent(new MetriqusInAppRevenue(...));
 Metriqus.TrackPerformance(fps);
 ```
 
-**With optional parameters:**
-
-```csharp
-Metriqus.TrackPerformance(fps, new List<TypedParameter> {
-    new TypedParameter("device_temp", 42),
-    new TypedParameter("scene_name", "BattleArena")
-});
-```
-
 ### Track Item Usage
 
 ```csharp
 Metriqus.TrackItemUsed(new MetriqusItemUsedEvent(){
-                ItemName = "best item",
-                Amount = 5,
-                ItemType = "fire",
-                ItemRarity = "epic",
-                ItemClass = "mage",
-                ItemCategory = "handheld",
-                Reason = "fusion"
-            });
-```
-
-**With optional parameters inside the event object:**
-
-```csharp
-Metriqus.TrackItemUsed(new MetriqusItemUsedEvent(new() { new TypedParameter("item_x", 5) })
-            {
                 ItemName = "best item",
                 Amount = 5,
                 ItemType = "fire",
@@ -237,38 +201,10 @@ Metriqus.TrackLevelStarted(new MetriqusLevelStartedEvent(){
                 Map = "map_3"
             });
 ```
-
-**With optional parameters inside the event object:**
-
-```csharp
-Metriqus.TrackLevelStarted(new MetriqusLevelStartedEvent(new() { new TypedParameter("level_value", 10) })
-            {
-                LevelNumber = 10,
-                LevelName = "Super Level",
-                Map = "map_3"
-            });
-```
-
 ### Track Level Completion
 
 ```csharp
 Metriqus.TrackLevelCompleted(new MetriqusLevelCompletedEvent(){
-                LevelNumber = 10,
-                LevelName = "Super Level",
-                Map = "map_3",
-                Duration = 98,
-                LevelProgress = 100,
-                LevelReward = 20,
-                LevelReward1 = 3,
-                LevelReward2 = 5,
-            });
-```
-
-**With optional parameters inside the event object:**
-
-```csharp
-Metriqus.TrackLevelCompleted(new MetriqusLevelCompletedEvent(new() { new TypedParameter("level_comp_val", "1000") })
-            {
                 LevelNumber = 10,
                 LevelName = "Super Level",
                 Map = "map_3",
@@ -286,47 +222,18 @@ Metriqus.TrackLevelCompleted(new MetriqusLevelCompletedEvent(new() { new TypedPa
 Metriqus.TrackCampaignAction(new MetriqusCampaignActionEvent(
                 campaignId: "campaign_1",
                 variantId: "variant_1",
-                action: MetriqusCampaignActionType.Click,
-                new() { new TypedParameter("campagn_val", "xyz") }));
+                action: MetriqusCampaignActionType.Click ));
 ```
-
-**With optional parameters inside the event object:**
-
-```csharp
-Metriqus.TrackCampaignAction(new MetriqusCampaignActionEvent(
-                campaignId: "campaign_1",
-                variantId: "variant_1",
-                action: MetriqusCampaignActionType.Click));
-```
-
 ### Track Screen View
 
 ```csharp
 Metriqus.TrackScreenView("MainMenu");
 ```
 
-**With optional parameters:**
-
-```csharp
-Metriqus.TrackScreenView("MainMenu", new List<TypedParameter> {
-    new TypedParameter("user_segment", "beta"),
-    new TypedParameter("entry_point", "popup")
-});
-```
-
 ### Track Button Click
 
 ```csharp
 Metriqus.TrackButtonClick("PlayButton");
-```
-
-**With optional parameters:**
-
-```csharp
-Metriqus.TrackButtonClick("PlayButton", new List<TypedParameter> {
-    new TypedParameter("context", "main_menu"),
-    new TypedParameter("experiment_group", "A")
-});
 ```
 
 ### Track Ad Revenue (Generic, Applovin, Admob)
