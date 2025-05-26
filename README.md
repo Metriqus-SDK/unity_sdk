@@ -158,9 +158,9 @@ You can also let the SDK initialize automatically by unchecking **ManuelStart** 
 ---
 
 
-### Event Tracking
+## Event Tracking
 
-#### Track Custom Events
+### Track Custom Events
 
 ```csharp
 Metriqus.TrackCustomEvent(new MetriqusCustomEvent("event_name"));
@@ -178,13 +178,13 @@ Metriqus.TrackCustomEvent(new MetriqusCustomEvent(
 ));
 ```
 
-#### Track In-App Purchases (IAP)
+### Track In-App Purchases (IAP)
 
 ```csharp
 Metriqus.TrackIAPEvent(new MetriqusInAppRevenue(...));
 ```
 
-#### Track Performance (FPS)
+### Track Performance (FPS)
 
 ```csharp
 Metriqus.TrackPerformance(fps);
@@ -199,7 +199,7 @@ Metriqus.TrackPerformance(fps, new List<TypedParameter> {
 });
 ```
 
-#### Track Item Usage
+### Track Item Usage
 
 ```csharp
 Metriqus.TrackItemUsed(new MetriqusItemUsedEvent(){
@@ -228,7 +228,7 @@ Metriqus.TrackItemUsed(new MetriqusItemUsedEvent(new() { new TypedParameter("ite
             });
 ```
 
-#### Track Level Start
+### Track Level Start
 
 ```csharp
 Metriqus.TrackLevelStarted(new MetriqusLevelStartedEvent(){
@@ -249,7 +249,7 @@ Metriqus.TrackLevelStarted(new MetriqusLevelStartedEvent(new() { new TypedParame
             });
 ```
 
-#### Track Level Completion
+### Track Level Completion
 
 ```csharp
 Metriqus.TrackLevelCompleted(new MetriqusLevelCompletedEvent(){
@@ -280,7 +280,7 @@ Metriqus.TrackLevelCompleted(new MetriqusLevelCompletedEvent(new() { new TypedPa
             });
 ```
 
-#### Track Campaign Actions
+### Track Campaign Actions
 
 ```csharp
 Metriqus.TrackCampaignAction(new MetriqusCampaignActionEvent(
@@ -299,7 +299,7 @@ Metriqus.TrackCampaignAction(new MetriqusCampaignActionEvent(
                 action: MetriqusCampaignActionType.Click));
 ```
 
-#### Track Screen View
+### Track Screen View
 
 ```csharp
 Metriqus.TrackScreenView("MainMenu");
@@ -314,7 +314,7 @@ Metriqus.TrackScreenView("MainMenu", new List<TypedParameter> {
 });
 ```
 
-#### Track Button Click
+### Track Button Click
 
 ```csharp
 Metriqus.TrackButtonClick("PlayButton");
@@ -329,7 +329,7 @@ Metriqus.TrackButtonClick("PlayButton", new List<TypedParameter> {
 });
 ```
 
-#### Track Ad Revenue (Generic, Applovin, Admob)
+### Track Ad Revenue (Generic, Applovin, Admob)
 
 ```csharp
 Metriqus.TrackAdRevenue(new MetriqusAdRevenue(...));
@@ -341,7 +341,7 @@ Metriqus.TrackAdmobAdRevenue(new MetriqusAdmobAdRevenue(...));
 
 ### User Attributes
 
-#### Set User Attribute
+### Set User Attribute
 
 ```csharp
 Metriqus.SetUserAttribute(new TypedParameter("user_type", "premium"));
