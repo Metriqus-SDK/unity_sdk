@@ -139,9 +139,8 @@ The following functions allow you to track user events, ad revenue, and other an
 - Calls made outside these platforms will log an error message.
 - Ensure the SDK is initialized before calling tracking-related functions.
 
-## Usage Guide
 
-The `Metriqus` SDK provides a full suite of analytics tracking tools for Unity games. Below are the supported methods and how to use them in your project.
+# Usage Guide
 
 ### Initialization
 
