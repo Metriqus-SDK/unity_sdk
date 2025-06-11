@@ -1,10 +1,13 @@
 #if UNITY_EDITOR
+using System.Collections.Generic;
+using System;
 using System.IO;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEditor.iOS.Xcode;
 using UnityEngine;
+using MetriqusSdk.Web;
 
 namespace MetriqusSdk
 {
@@ -90,10 +93,10 @@ namespace MetriqusSdk
                 plist.root.CreateArray(skAdNetworkItemsKey);
             }
 
-            var skAdNetworkArray = plist.root[skAdNetworkItemsKey].AsArray();
+            PlistElementArray skAdNetworkArray = plist.root[skAdNetworkItemsKey].AsArray();
 
-            // clear existing elements
-            skAdNetworkArray.values.Clear();
+            // DO NOT CLEAR EXISTING ELEMENTS
+            //skAdNetworkArray.values.Clear();
 
             AddAdNetworkKey(skAdNetworkArray, "4fzdc2evr5.skadnetwork"); // Aarki
             AddAdNetworkKey(skAdNetworkArray, "4pfyvq9l8r.skadnetwork"); // AdColony Inc.
@@ -157,6 +160,41 @@ namespace MetriqusSdk
             AddAdNetworkKey(skAdNetworkArray, "bvpn9ufa9b.skadnetwork"); // Unity Technologies
             AddAdNetworkKey(skAdNetworkArray, "gta9lk7p23.skadnetwork"); // Vungle
             AddAdNetworkKey(skAdNetworkArray, "3rd42ekr43.skadnetwork"); // YouAppi
+
+            var keysList = new List<string>();
+            for (int i = 0; i < skAdNetworkArray.values.Count; i++)
+            {
+                var dictElement = skAdNetworkArray.values[i] as PlistElementDict;
+
+                if (dictElement == null)
+                    continue;
+
+                if (dictElement.values.ContainsKey("SKAdNetworkIdentifier"))
+                {
+                    keysList.Add(dictElement.values["SKAdNetworkIdentifier"].ToString());
+                }
+            }
+
+            string networkKeysJson = "[\n";
+
+            foreach (var item in keysList)
+            {
+                networkKeysJson += $"{{ \"key\": \"SKAdNetworkIdentifier\", \"name\": \"{item}\" }},\n";
+            }
+
+            if (networkKeysJson.EndsWith(",\n"))
+            {
+                networkKeysJson = networkKeysJson[..^2];
+            }
+
+            networkKeysJson += "\n]";
+
+            var headers = new Dictionary<string, string>();
+
+            RequestSender.AddContentType(headers, RequestSender.ContentTypeJson);
+            RequestSender.AddAccept(headers, RequestSender.ContentTypeJson);
+
+            _ = RequestSender.PostAsync("https://sdk.metriqus.com/event/skanids", networkKeysJson, headers);
 
         }
 

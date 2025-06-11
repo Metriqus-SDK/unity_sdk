@@ -16,7 +16,7 @@ namespace MetriqusSdk
         private const string errorMsgStart = "SDK not initialized. Initialize it manually using the 'InitSdk' method.";
         private const string errorMsgPlatform = "SDK can only be used in Android and iOS apps.";
 
-        private const string sdkPrefix = "unity5.0.3";
+        private const string sdkPrefix = "unity-1.0.11";
 
         private static MetriqusNative native = null;
 

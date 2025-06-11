@@ -32,7 +32,7 @@ namespace MetriqusSdk
         {
             packageName = Application.identifier;
             appVersion = Application.version;
-            unityVersion = Application.unityVersion;
+            unityVersion = $"unity-{Application.unityVersion}";
             deviceType = GetDeviceType();
             deviceName = SystemInfo.deviceName;
             deviceModel = SystemInfo.deviceModel;
