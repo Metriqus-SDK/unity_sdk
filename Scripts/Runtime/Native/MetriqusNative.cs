@@ -55,7 +55,7 @@ namespace MetriqusSdk
                 packageSender = new MetriqusPackageSender();
                 internetConnectionChecker = new InternetConnectionChecker();
 
-                uniqueUserIdentifier = new UniqueUserIdentifier(storage, adId, deviceInfo.deviceId);
+                uniqueUserIdentifier = new UniqueUserIdentifier(storage);
                 userAttributes = new UserAttributes(storage);
 
                 internetConnectionChecker.OnConnectedToInternet += OnConnectedToInternet;

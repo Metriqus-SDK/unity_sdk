@@ -43,7 +43,7 @@ namespace MetriqusSdk
             PackageBuilder builder = new PackageBuilder(Metriqus.GetMetriqusSettings(), Metriqus.GetDeviceInfo(), DateTime.UtcNow);
             Package package = builder.BuildIAPEventPackage(metriqusEvent);
 
-            MetriqusLogger.LogEvent(package);
+            MetriqusLogger.LogEvent(package, sendImmediately: true);
 
             if (Metriqus.LogLevel == LogLevel.Verbose)
                 Metriqus.DebugLog("Sending IAP Event Package. \n" + package.ToString());
@@ -54,7 +54,7 @@ namespace MetriqusSdk
             PackageBuilder builder = new PackageBuilder(Metriqus.GetMetriqusSettings(), Metriqus.GetDeviceInfo(), DateTime.UtcNow);
             Package package = builder.BuildAdRevenueEventPackage(adRevenue);
 
-            MetriqusLogger.LogEvent(package);
+            MetriqusLogger.LogEvent(package, sendImmediately: true);
 
             if (Metriqus.LogLevel == LogLevel.Verbose)
                 Metriqus.DebugLog("Sending Event Package. \n" + package.ToString());

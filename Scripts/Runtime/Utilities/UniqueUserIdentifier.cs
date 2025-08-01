@@ -1,7 +1,5 @@
-﻿using System.Security.Cryptography;
-using System.Text;
+﻿using MetriqusSdk.Storage;
 using System;
-using MetriqusSdk.Storage;
 
 namespace MetriqusSdk
 {
@@ -11,7 +9,7 @@ namespace MetriqusSdk
         private string id;
         public string Id => id;
 
-        public UniqueUserIdentifier(IStorage storage, string firstKey, string secondKey)
+        public UniqueUserIdentifier(IStorage storage)
         {
             bool isUniqueUserIdentifierKeyExist = storage.CheckKeyExist(UniqueUserIdentifierKey);
 
@@ -21,14 +19,9 @@ namespace MetriqusSdk
             }
             else
             {
-                using (SHA256 sha256 = SHA256.Create())
-                {
-                    string combined = firstKey + ":" + secondKey;
-                    byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(combined));
-                    id = BitConverter.ToString(hashBytes).Replace("-", "").Substring(0, 16); // 16-char ID
+                id = Guid.NewGuid().ToString();
 
-                    storage.SaveData(UniqueUserIdentifierKey, id);
-                }
+                storage.SaveData(UniqueUserIdentifierKey, id);
             }
         }
     }

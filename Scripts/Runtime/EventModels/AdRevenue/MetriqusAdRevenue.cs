@@ -49,9 +49,11 @@ namespace MetriqusSdk
         /// Initializes a new instance of the <see cref="MetriqusAdRevenue"/> class with the specified source.
         /// </summary>
         /// <param name="source">The source of the ad revenue data.</param>
-        public MetriqusAdRevenue(string source)
+        public MetriqusAdRevenue(string source, MetriqusAdUnitType adUnitType)
         {
             this.Source = source;
+
+            this.AdRevenueUnit = MetriqusAdUnit.AdUnitToString(adUnitType);
         }
 
         /// <summary>
@@ -60,11 +62,13 @@ namespace MetriqusSdk
         /// <param name="source">The source of the ad revenue data.</param>
         /// <param name="revenue">The revenue generated from ads.</param>
         /// <param name="currency">The currency in which the revenue is reported.</param>
-        public MetriqusAdRevenue(string source, double revenue, string currency)
+        public MetriqusAdRevenue(string source, MetriqusAdUnitType adUnitType, double revenue, string currency)
         {
             this.Source = source;
             this.Revenue = revenue;
             this.Currency = currency;
+
+            this.AdRevenueUnit = MetriqusAdUnit.AdUnitToString(adUnitType);
         }
 
         public string GetSource() => Source;

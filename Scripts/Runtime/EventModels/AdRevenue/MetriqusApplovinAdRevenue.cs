@@ -7,12 +7,12 @@ namespace MetriqusSdk
     {
         private const string source = "applovin";
 
-        public MetriqusApplovinAdRevenue() : base(source)
+        public MetriqusApplovinAdRevenue(MetriqusAdUnitType adUnitType) : base(source, adUnitType)
         {
                    
         }
 
-        public MetriqusApplovinAdRevenue(double revenue, string currency) : base(source, revenue, currency)
+        public MetriqusApplovinAdRevenue(MetriqusAdUnitType adUnitType, double revenue, string currency) : base(source, adUnitType, revenue, currency)
         {
         }
     }
